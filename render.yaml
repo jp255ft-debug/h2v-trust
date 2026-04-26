@@ -1,5 +1,6 @@
 # H2V-Trust Render Configuration
 # Deploy: https://dashboard.render.com
+# Apenas Backend + Banco (Frontend está na Vercel)
 
 services:
   # Backend API - FastAPI
@@ -33,7 +34,7 @@ services:
       - key: MOCK_MODE
         value: "true"  # Começa com mock até deploy dos contratos na Polygon
       - key: CORS_ORIGINS
-        value: https://h2vtrust.com.br,https://www.h2vtrust.com.br
+        value: https://h2vtrust.com.br,https://www.h2vtrust.com.br,https://h2v-trust.vercel.app
       - key: NEXT_PUBLIC_API_URL
         value: https://h2v-trust-api.onrender.com
       - key: BATCH_REGISTRY_ADDRESS
@@ -44,25 +45,6 @@ services:
         sync: false
       - key: GREEN_HYDROGEN_SBT_ADDRESS
         sync: false
-
-  # Frontend - Next.js (buildado como static, servido pelo Render)
-  - type: web
-    name: h2v-trust-frontend
-    env: node
-    region: ohio
-    plan: starter
-    buildCommand: |
-      cd frontend && npm install && npm run build
-    startCommand: |
-      cd frontend && npm start
-    healthCheckPath: /
-    envVars:
-      - key: NODE_VERSION
-        value: 18.18.0
-      - key: NEXT_PUBLIC_API_URL
-        value: https://h2v-trust-api.onrender.com
-      - key: NEXT_PUBLIC_BACKEND_URL
-        value: https://h2v-trust-api.onrender.com
 
 databases:
   # PostgreSQL Database
