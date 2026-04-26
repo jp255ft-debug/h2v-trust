@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { cn } from "@/lib/utils"
+import { cn } from "@/src/lib/utils"
 
 interface DropdownMenuProps extends React.HTMLAttributes<HTMLDivElement> {
   children: React.ReactNode
