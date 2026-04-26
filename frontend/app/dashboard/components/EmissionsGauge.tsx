@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchStats } from "@/src/lib/api";
+import { fetchStats } from "@/lib/api";
 
 interface EmissionsGaugeProps {
   avgEmissions?: number;

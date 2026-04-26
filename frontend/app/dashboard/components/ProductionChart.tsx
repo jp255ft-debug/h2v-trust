@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchBatches } from "@/src/lib/api";
-import type { Batch } from "@/src/types/batch";
+import { fetchBatches } from "@/lib/api";
+import type { Batch } from "@/types/batch";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend } from "recharts";
 
 interface ProductionChartProps {

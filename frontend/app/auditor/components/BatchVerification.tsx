@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 import { CheckCircle, XCircle, Cloud, Droplets, Zap, Search, FileText } from "lucide-react";
-import { useBatchDetail, useBatchCompliance } from "@/src/hooks/useBatch";
-import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
+import { useBatchDetail, useBatchCompliance } from "@/hooks/useBatch";
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
 
 interface BatchVerificationProps {
   batchId?: string;

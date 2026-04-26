@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Search, CheckCircle, Cloud, FileText } from "lucide-react";
-import { fetchStats, fetchCertificate } from "@/src/lib/api";
+import { fetchStats, fetchCertificate } from "@/lib/api";
 
 export default function AuditorPage() {
   const [search, setSearch] = useState("");

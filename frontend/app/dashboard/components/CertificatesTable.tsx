@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchBatches } from "@/src/lib/api";
-import type { Batch } from "@/src/types/batch";
+import { fetchBatches } from "@/lib/api";
+import type { Batch } from "@/types/batch";
 import { CheckCircle, XCircle, Clock, ExternalLink } from "lucide-react";
 
 interface CertificatesTableProps {

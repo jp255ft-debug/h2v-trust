@@ -3,9 +3,9 @@
 import { useState } from "react";
 import Link from "next/link";
 import { PlusCircle, Search, Download, AlertTriangle, CheckCircle, Clock } from "lucide-react";
-import Navbar from "@/src/components/layout/Navbar";
-import { useBatches } from "@/src/hooks/useBatch";
-import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
+import Navbar from "@/components/layout/Navbar";
+import { useBatches } from "@/hooks/useBatch";
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
 
 export default function ProducerBatchesPage() {
   const [searchTerm, setSearchTerm] = useState("");

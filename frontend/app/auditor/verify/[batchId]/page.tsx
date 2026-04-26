@@ -3,9 +3,9 @@
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, CheckCircle, XCircle, Cloud, Droplets, Zap, FileText } from "lucide-react";
-import { useBatchDetail, useBatchCompliance } from "@/src/hooks/useBatch";
-import LoadingSpinner from "@/src/components/shared/LoadingSpinner";
-import ErrorBoundary from "@/src/components/shared/ErrorBoundary";
+import { useBatchDetail, useBatchCompliance } from "@/hooks/useBatch";
+import LoadingSpinner from "@/components/shared/LoadingSpinner";
+import ErrorBoundary from "@/components/shared/ErrorBoundary";
 
 function BatchVerificationContent() {
   const params = useParams();

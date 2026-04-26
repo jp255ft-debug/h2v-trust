@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { fetchStats, fetchBatches } from "@/src/lib/api";
+import { fetchStats, fetchBatches } from "@/lib/api";
 import ProductionChart from "./components/ProductionChart";
 import EmissionsGauge from "./components/EmissionsGauge";
 import CertificatesTable from "./components/CertificatesTable";

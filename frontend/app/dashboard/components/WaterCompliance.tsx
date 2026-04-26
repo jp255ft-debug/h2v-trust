@@ -1,8 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { fetchStats, fetchBatches } from "@/src/lib/api";
-import type { Batch } from "@/src/types/batch";
+import { fetchStats, fetchBatches } from "@/lib/api";
+import type { Batch } from "@/types/batch";
 import { Droplets, CheckCircle, AlertTriangle, Thermometer } from "lucide-react";
 
 interface WaterComplianceProps {

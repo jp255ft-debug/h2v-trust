@@ -27,8 +27,8 @@ import {
   PlusCircle,
   AlertTriangle,
 } from "lucide-react";
-import Navbar from "@/src/components/layout/Navbar";
-import { fetchBatches, fetchStats } from "@/src/lib/api";
+import Navbar from "@/components/layout/Navbar";
+import { fetchBatches, fetchStats } from "@/lib/api";
 
 // Dados mock para demonstração
 const mockLotesProdutor = [
