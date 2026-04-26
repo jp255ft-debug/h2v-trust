@@ -27,9 +27,9 @@ import {
   PlusCircle,
   AlertTriangle,
 } from "lucide-react";
-import Navbar from "@/components/layout/Navbar";
-import { fetchBatches, fetchStats } from "@/lib/api";
-import type { Batch } from "@/types/batch";
+import Navbar from "../../src/components/layout/Navbar";
+import { fetchBatches, fetchStats } from "../../src/lib/api";
+import type { Batch } from "../../src/types/batch";
 
 interface LoteProdutor {
   id: string;
