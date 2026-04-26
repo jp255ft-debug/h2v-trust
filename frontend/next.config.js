@@ -1,3 +1,5 @@
+const path = require('path');
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -14,8 +16,11 @@ const nextConfig = {
   images: {
     domains: ['localhost', 'h2vtrust.com.br', 'www.h2vtrust.com.br', 'h2v-trust-api.onrender.com'],
   },
-  // Importante para o Render - usar hostname 0.0.0.0
-  // hostname: '0.0.0.0',
+  // Força o webpack a resolver o alias @ corretamente
+  webpack: (config) => {
+    config.resolve.alias['@'] = path.resolve(__dirname, 'src');
+    return config;
+  },
 };
 
 module.exports = nextConfig;
