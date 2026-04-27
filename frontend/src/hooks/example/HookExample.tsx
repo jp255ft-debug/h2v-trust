@@ -2,7 +2,7 @@
 "use client";
 
 import React from "react";
-import { useBatches, useCertificate, useComplianceCheck } from "@/hooks";
+import { useBatches, useCertificate, useComplianceCheck } from "../index";
 
 interface HookExampleProps {
   batchId?: string;
@@ -150,7 +150,7 @@ export default function HookExample({ batchId = "batch_001", certificateId = "ce
         <div className="p-4 bg-muted rounded-md font-mono text-sm">
           <pre className="whitespace-pre-wrap">
 {`// Importação dos hooks
-import { useBatch, useCertificate, useComplianceCheck } from "@/hooks";
+import { useBatch, useCertificate, useComplianceCheck } from "../index";
 
 // Uso do hook useBatch
 const { batch, isLoading, error, refetch } = useBatch("batch_id", {
