@@ -144,7 +144,7 @@ export default function CertificatesTable({ batches: propBatches, limit = 5 }: C
     return (
       <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900 text-red-800 dark:text-red-200">
         <XCircle className="w-3 h-3" />
-        N├úo Conforme
+        Não Conforme
       </span>
     );
   };
@@ -158,7 +158,7 @@ export default function CertificatesTable({ batches: propBatches, limit = 5 }: C
       <div className="bg-card text-card-foreground rounded-lg border shadow-sm p-6">
         <div className="mb-6">
           <h3 className="text-lg font-semibold">Certificados Recentes</h3>
-          <p className="text-sm text-muted-foreground">├Ültimos certificados emitidos no sistema</p>
+          <p className="text-sm text-muted-foreground">Últimos certificados emitidos no sistema</p>
         </div>
         <div className="space-y-4">
           {[...Array(limit)].map((_, i) => (
@@ -176,12 +176,12 @@ export default function CertificatesTable({ batches: propBatches, limit = 5 }: C
       <div className="bg-card text-card-foreground rounded-lg border shadow-sm p-6">
         <div className="mb-6">
           <h3 className="text-lg font-semibold">Certificados Recentes</h3>
-          <p className="text-sm text-muted-foreground">├Ültimos certificados emitidos no sistema</p>
+          <p className="text-sm text-muted-foreground">Últimos certificados emitidos no sistema</p>
         </div>
         <div className="text-center py-8">
-          <div className="text-red-500 mb-2">ÔÜá´©Å</div>
+          <div className="text-red-500 mb-2">⚠️</div>
           <p className="text-sm text-muted-foreground">{error}</p>
-          <p className="text-xs text-muted-foreground mt-1">Mostrando dados de demonstra├º├úo</p>
+          <p className="text-xs text-muted-foreground mt-1">Mostrando dados de demonstração</p>
         </div>
       </div>
     );
@@ -193,7 +193,7 @@ export default function CertificatesTable({ batches: propBatches, limit = 5 }: C
         <div className="flex justify-between items-center">
           <div>
             <h3 className="text-lg font-semibold">Certificados Recentes</h3>
-            <p className="text-sm text-muted-foreground">├Ültimos certificados emitidos no sistema</p>
+            <p className="text-sm text-muted-foreground">Últimos certificados emitidos no sistema</p>
           </div>
           <div className="text-xs text-muted-foreground">
             Total: {certificates.length} certificados
@@ -208,8 +208,8 @@ export default function CertificatesTable({ batches: propBatches, limit = 5 }: C
               <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Certificado</th>
               <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Status</th>
               <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Tamanho</th>
-              <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Emiss├Áes</th>
-              <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">├ügua</th>
+              <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Emissões</th>
+              <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Água</th>
               <th className="text-left py-3 px-4 text-sm font-medium text-muted-foreground">Data</th>
             </tr>
           </thead>
@@ -237,15 +237,15 @@ export default function CertificatesTable({ batches: propBatches, limit = 5 }: C
                 </td>
                 <td className="py-3 px-4">
                   <div className={`font-medium ${cert.emissions <= 3.4 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
-                    {cert.emissions.toFixed(1)} kgCOÔéée
+                    {cert.emissions.toFixed(1)} kgCO₂e
                   </div>
-                  <div className="text-xs text-muted-foreground">por kgHÔéé</div>
+                  <div className="text-xs text-muted-foreground">por kgH₂</div>
                 </td>
                 <td className="py-3 px-4">
                   <div className={`font-medium ${cert.water <= 15 ? 'text-blue-600 dark:text-blue-400' : 'text-orange-600 dark:text-orange-400'}`}>
                     {cert.water.toFixed(1)} L
                   </div>
-                  <div className="text-xs text-muted-foreground">por kgHÔéé</div>
+                  <div className="text-xs text-muted-foreground">por kgH₂</div>
                 </td>
                 <td className="py-3 px-4">
                   <div className="flex items-center gap-2">
@@ -269,19 +269,19 @@ export default function CertificatesTable({ batches: propBatches, limit = 5 }: C
             </div>
           </div>
           <div className="bg-muted/30 rounded-lg p-3">
-            <div className="text-xs text-muted-foreground">Produ├º├úo Total</div>
+            <div className="text-xs text-muted-foreground">Produção Total</div>
             <div className="text-lg font-semibold">
               {(certificates.reduce((sum, c) => sum + c.size, 0) / 1000).toFixed(1)} ton
             </div>
           </div>
           <div className="bg-muted/30 rounded-lg p-3">
-            <div className="text-xs text-muted-foreground">Emiss├Áes M├®dias</div>
+            <div className="text-xs text-muted-foreground">Emissões Médias</div>
             <div className="text-lg font-semibold">
-              {(certificates.reduce((sum, c) => sum + c.emissions, 0) / certificates.length).toFixed(1)} kgCOÔéée
+              {(certificates.reduce((sum, c) => sum + c.emissions, 0) / certificates.length).toFixed(1)} kgCO₂e
             </div>
           </div>
           <div className="bg-muted/30 rounded-lg p-3">
-            <div className="text-xs text-muted-foreground">├ügua M├®dia</div>
+            <div className="text-xs text-muted-foreground">Água Média</div>
             <div className="text-lg font-semibold">
               {(certificates.reduce((sum, c) => sum + c.water, 0) / certificates.length).toFixed(1)} L/kg
             </div>
@@ -293,11 +293,11 @@ export default function CertificatesTable({ batches: propBatches, limit = 5 }: C
       <div className="mt-4 flex flex-wrap gap-4 text-xs text-muted-foreground">
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 rounded-full bg-green-500"></div>
-          <span>Dentro do limite CBAM (Ôëñ 3.4 kgCOÔéée/kgHÔéé)</span>
+          <span>Dentro do limite CBAM (≤ 3.4 kgCO₂e/kgH₂)</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 rounded-full bg-blue-500"></div>
-          <span>Dentro do limite h├¡drico (Ôëñ 15 L/kgHÔéé)</span>
+          <span>Dentro do limite hídrico (≤ 15 L/kgH₂)</span>
         </div>
       </div>
     </div>

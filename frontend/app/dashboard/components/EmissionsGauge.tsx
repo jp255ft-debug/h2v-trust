@@ -29,7 +29,7 @@ export default function EmissionsGauge({ avgEmissions: propAvgEmissions }: Emiss
         setError(null);
       } catch (err) {
         console.error("Failed to load emissions data:", err);
-        setError("Falha ao carregar dados de emiss├Áes");
+        setError("Falha ao carregar dados de emissões");
         // Fallback to sample data
         setAvgEmissions(2.1);
       } finally {
@@ -78,7 +78,7 @@ export default function EmissionsGauge({ avgEmissions: propAvgEmissions }: Emiss
       <div className="bg-card text-card-foreground rounded-lg border shadow-sm p-6 h-80 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-sm text-muted-foreground">Carregando dados de emiss├Áes...</p>
+          <p className="mt-2 text-sm text-muted-foreground">Carregando dados de emissões...</p>
         </div>
       </div>
     );
@@ -88,9 +88,9 @@ export default function EmissionsGauge({ avgEmissions: propAvgEmissions }: Emiss
     return (
       <div className="bg-card text-card-foreground rounded-lg border shadow-sm p-6 h-80 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-red-500 mb-2">ÔÜá´©Å</div>
+          <div className="text-red-500 mb-2">⚠️</div>
           <p className="text-sm text-muted-foreground">{error}</p>
-          <p className="text-xs text-muted-foreground mt-1">Mostrando dados de demonstra├º├úo</p>
+          <p className="text-xs text-muted-foreground mt-1">Mostrando dados de demonstração</p>
         </div>
       </div>
     );
@@ -99,8 +99,8 @@ export default function EmissionsGauge({ avgEmissions: propAvgEmissions }: Emiss
   return (
     <div className="bg-card text-card-foreground rounded-lg border shadow-sm p-6">
       <div className="mb-6">
-        <h3 className="text-lg font-semibold">Emiss├Áes de GHG</h3>
-        <p className="text-sm text-muted-foreground">M├®dia de emiss├Áes por kg de HÔéé produzido</p>
+        <h3 className="text-lg font-semibold">Emissões de GHG</h3>
+        <p className="text-sm text-muted-foreground">Média de emissões por kg de H₂ produzido</p>
       </div>
 
       <div className="flex flex-col items-center justify-center">
@@ -125,7 +125,7 @@ export default function EmissionsGauge({ avgEmissions: propAvgEmissions }: Emiss
             <div className="text-3xl font-bold" style={{ color: gaugeColor }}>
               {avgEmissions.toFixed(1)}
             </div>
-            <div className="text-sm text-muted-foreground">kgCOÔéée/kgHÔéé</div>
+            <div className="text-sm text-muted-foreground">kgCO₂e/kgH₂</div>
             <div className={`text-xs font-medium mt-1 ${getEmissionsColor(avgEmissions)}`}>
               {getEmissionsLevel(avgEmissions)}
             </div>
@@ -148,16 +148,16 @@ export default function EmissionsGauge({ avgEmissions: propAvgEmissions }: Emiss
           <div className="space-y-2">
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Limite CBAM:</span>
-              <span className="font-medium">{CBAM_LIMIT} kgCOÔéée/kgHÔéé</span>
+              <span className="font-medium">{CBAM_LIMIT} kgCO₂e/kgH₂</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Meta:</span>
-              <span className="font-medium text-purple-600 dark:text-purple-400">{TARGET} kgCOÔéée/kgHÔéé</span>
+              <span className="font-medium text-purple-600 dark:text-purple-400">{TARGET} kgCO₂e/kgH₂</span>
             </div>
             <div className="flex justify-between text-sm">
               <span className="text-muted-foreground">Atual:</span>
               <span className={`font-medium ${getEmissionsColor(avgEmissions)}`}>
-                {avgEmissions.toFixed(1)} kgCOÔéée/kgHÔéé
+                {avgEmissions.toFixed(1)} kgCO₂e/kgH₂
               </span>
             </div>
           </div>
@@ -195,7 +195,7 @@ export default function EmissionsGauge({ avgEmissions: propAvgEmissions }: Emiss
                 <p className="text-xs text-muted-foreground mt-1">
                   {avgEmissions <= CBAM_LIMIT 
                     ? "Em conformidade com os requisitos CBAM da UE" 
-                    : "Acima do limite CBAM - requer aten├º├úo"}
+                    : "Acima do limite CBAM - requer atenção"}
                 </p>
               </div>
             </div>
@@ -207,7 +207,7 @@ export default function EmissionsGauge({ avgEmissions: propAvgEmissions }: Emiss
               Economia estimada de carbono
             </p>
             <p className="text-xs text-blue-600 dark:text-blue-500 mt-1">
-              Comparado com hidrog├¬nio cinza (10 kgCOÔéée/kgHÔéé): {(10 - avgEmissions).toFixed(1)} kgCOÔéée/kgHÔéé
+              Comparado com hidrogênio cinza (10 kgCO₂e/kgH₂): {(10 - avgEmissions).toFixed(1)} kgCO₂e/kgH₂
             </p>
           </div>
         </div>
