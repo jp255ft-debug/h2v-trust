@@ -130,6 +130,8 @@ test-next-app/
 
 # Debug output files
 git_diff_output*.txt
+git_diff_name_status*.txt
+git_diff_remote*.txt
 dumb_output.txt
 code_check.txt
 code.txt
@@ -141,3 +143,6 @@ hardhat_res.txt
 tree_clean.txt
 tree_completo.txt
 checksum.txt
+
+# Generated files
+backend/pip_freeze.txt
