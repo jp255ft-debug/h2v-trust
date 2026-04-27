@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { fetchBatches } from "@/lib/api";
@@ -34,7 +34,7 @@ export default function ProductionChart({ batches: propBatches }: ProductionChar
         setError(null);
       } catch (err) {
         console.error("Failed to load production data:", err);
-        setError("Falha ao carregar dados de produção");
+        setError("Falha ao carregar dados de produ├º├úo");
         setChartData(getSampleData());
       } finally {
         setIsLoading(false);
@@ -77,7 +77,7 @@ export default function ProductionChart({ batches: propBatches }: ProductionChar
       <div className="bg-card text-card-foreground rounded-lg border shadow-sm p-6 h-80 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-sm text-muted-foreground">Carregando dados de produção...</p>
+          <p className="mt-2 text-sm text-muted-foreground">Carregando dados de produ├º├úo...</p>
         </div>
       </div>
     );
@@ -87,9 +87,9 @@ export default function ProductionChart({ batches: propBatches }: ProductionChar
     return (
       <div className="bg-card text-card-foreground rounded-lg border shadow-sm p-6 h-80 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-red-500 mb-2">⚠️</div>
+          <div className="text-red-500 mb-2">ÔÜá´©Å</div>
           <p className="text-sm text-muted-foreground">{error}</p>
-          <p className="text-xs text-muted-foreground mt-1">Mostrando dados de demonstração</p>
+          <p className="text-xs text-muted-foreground mt-1">Mostrando dados de demonstra├º├úo</p>
         </div>
       </div>
     );
@@ -98,8 +98,8 @@ export default function ProductionChart({ batches: propBatches }: ProductionChar
   return (
     <div className="bg-card text-card-foreground rounded-lg border shadow-sm p-6">
       <div className="mb-6">
-        <h3 className="text-lg font-semibold">Produção vs Emissões</h3>
-        <p className="text-sm text-muted-foreground">Comparativo entre produção e emissões por lote</p>
+        <h3 className="text-lg font-semibold">Produ├º├úo vs Emiss├Áes</h3>
+        <p className="text-sm text-muted-foreground">Comparativo entre produ├º├úo e emiss├Áes por lote</p>
       </div>
       <div className="h-72">
         <ResponsiveContainer width="100%" height="100%">
@@ -109,8 +109,8 @@ export default function ProductionChart({ batches: propBatches }: ProductionChar
             <YAxis className="text-xs" />
             <Tooltip />
             <Legend />
-            <Bar dataKey="producao" fill="#10B981" name="Produção (ton)" radius={[4, 4, 0, 0]} />
-            <Bar dataKey="emissoes" fill="#F59E0B" name="Emissões (kgCO₂e/kgH₂)" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="producao" fill="#10B981" name="Produ├º├úo (ton)" radius={[4, 4, 0, 0]} />
+            <Bar dataKey="emissoes" fill="#F59E0B" name="Emiss├Áes (kgCOÔéée/kgHÔéé)" radius={[4, 4, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
       </div>

@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import Link from "next/link";
@@ -6,7 +6,6 @@ import { PlusCircle, Search, Download, AlertTriangle, CheckCircle, Clock } from 
 import Navbar from "@/components/layout/Navbar";
 import { useBatches } from "@/hooks/useBatch";
 import LoadingSpinner from "@/components/shared/LoadingSpinner";
-import type { Batch } from "@/types/batch";
 
 export default function ProducerBatchesPage() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -54,7 +53,7 @@ export default function ProducerBatchesPage() {
           <div>
             <h1 className="text-3xl font-bold tracking-tight">Meus Lotes</h1>
             <p className="text-muted-foreground">
-              Gerencie seus lotes de produção de hidrogênio verde
+              Gerencie seus lotes de produ├º├úo de hidrog├¬nio verde
             </p>
           </div>
           <div className="flex items-center gap-2">
@@ -115,11 +114,11 @@ export default function ProducerBatchesPage() {
                 <tr className="border-b bg-muted/50">
                   <th className="text-left py-3 px-4 font-medium text-sm">ID do Lote</th>
                   <th className="text-left py-3 px-4 font-medium text-sm">Tamanho</th>
-                  <th className="text-left py-3 px-4 font-medium text-sm">Emissões GHG</th>
-                  <th className="text-left py-3 px-4 font-medium text-sm">Consumo Água</th>
+                  <th className="text-left py-3 px-4 font-medium text-sm">Emiss├Áes GHG</th>
+                  <th className="text-left py-3 px-4 font-medium text-sm">Consumo ├ügua</th>
                   <th className="text-left py-3 px-4 font-medium text-sm">Status</th>
                   <th className="text-left py-3 px-4 font-medium text-sm">Data</th>
-                  <th className="text-left py-3 px-4 font-medium text-sm">Ações</th>
+                  <th className="text-left py-3 px-4 font-medium text-sm">A├º├Áes</th>
                 </tr>
               </thead>
               <tbody>
@@ -137,10 +136,10 @@ export default function ProducerBatchesPage() {
                       </td>
                       <td className="py-3 px-4">{batch.size_kg.toLocaleString()} kg</td>
                       <td className="py-3 px-4">
-                        {batch.telemetry?.ghg_emissions?.toFixed(2) || "N/A"} kgCO₂e/kgH₂
+                        {batch.telemetry?.ghg_emissions?.toFixed(2) || "N/A"} kgCOÔéée/kgHÔéé
                       </td>
                       <td className="py-3 px-4">
-                        {batch.telemetry?.water_consumption_liters?.toFixed(1) || "N/A"} L/kgH₂
+                        {batch.telemetry?.water_consumption_liters?.toFixed(1) || "N/A"} L/kgHÔéé
                       </td>
                       <td className="py-3 px-4">{getStatusBadge(batch.is_compliant)}</td>
                       <td className="py-3 px-4 text-sm text-muted-foreground">

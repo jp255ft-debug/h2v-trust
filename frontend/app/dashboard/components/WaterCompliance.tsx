@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { fetchStats, fetchBatches } from "@/lib/api";
@@ -44,7 +44,7 @@ export default function WaterCompliance({ avgWaterConsumption: propAvgWater, bat
         setError(null);
       } catch (err) {
         console.error("Failed to load water compliance data:", err);
-        setError("Falha ao carregar dados hídricos");
+        setError("Falha ao carregar dados h├¡dricos");
         // Fallback to sample data
         setAvgWaterConsumption(11.6);
         setWaterSources(getSampleWaterSources());
@@ -90,11 +90,11 @@ export default function WaterCompliance({ avgWaterConsumption: propAvgWater, bat
 
   const translateWaterSource = (source: string): string => {
     const translations: Record<string, string> = {
-      'desalination': 'Dessalinização',
-      'treated_wastewater': 'Água residual tratada',
-      'rainwater': 'Água da chuva',
-      'surface_water': 'Água superficial',
-      'groundwater': 'Água subterrânea',
+      'desalination': 'Dessaliniza├º├úo',
+      'treated_wastewater': '├ügua residual tratada',
+      'rainwater': '├ügua da chuva',
+      'surface_water': '├ügua superficial',
+      'groundwater': '├ügua subterr├ónea',
       'municipal': 'Rede municipal',
       'unknown': 'Desconhecida',
       'desconhecida': 'Desconhecida'
@@ -104,10 +104,10 @@ export default function WaterCompliance({ avgWaterConsumption: propAvgWater, bat
 
   const getSampleWaterSources = (): WaterSourceData[] => {
     return [
-      { source: 'Dessalinização', count: 24, percentage: 57 },
-      { source: 'Água residual tratada', count: 12, percentage: 29 },
-      { source: 'Água da chuha', count: 4, percentage: 10 },
-      { source: 'Água superficial', count: 2, percentage: 4 }
+      { source: 'Dessaliniza├º├úo', count: 24, percentage: 57 },
+      { source: '├ügua residual tratada', count: 12, percentage: 29 },
+      { source: '├ügua da chuha', count: 4, percentage: 10 },
+      { source: '├ügua superficial', count: 2, percentage: 4 }
     ];
   };
 
@@ -150,7 +150,7 @@ export default function WaterCompliance({ avgWaterConsumption: propAvgWater, bat
       <div className="bg-card text-card-foreground rounded-lg border shadow-sm p-6 h-80 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto"></div>
-          <p className="mt-2 text-sm text-muted-foreground">Carregando dados hídricos...</p>
+          <p className="mt-2 text-sm text-muted-foreground">Carregando dados h├¡dricos...</p>
         </div>
       </div>
     );
@@ -160,9 +160,9 @@ export default function WaterCompliance({ avgWaterConsumption: propAvgWater, bat
     return (
       <div className="bg-card text-card-foreground rounded-lg border shadow-sm p-6 h-80 flex items-center justify-center">
         <div className="text-center">
-          <div className="text-red-500 mb-2">⚠️</div>
+          <div className="text-red-500 mb-2">ÔÜá´©Å</div>
           <p className="text-sm text-muted-foreground">{error}</p>
-          <p className="text-xs text-muted-foreground mt-1">Mostrando dados de demonstração</p>
+          <p className="text-xs text-muted-foreground mt-1">Mostrando dados de demonstra├º├úo</p>
         </div>
       </div>
     );
@@ -176,8 +176,8 @@ export default function WaterCompliance({ avgWaterConsumption: propAvgWater, bat
             <Droplets className="w-6 h-6 text-blue-600 dark:text-blue-400" />
           </div>
           <div>
-            <h3 className="text-lg font-semibold">Conformidade Hídrica</h3>
-            <p className="text-sm text-muted-foreground">Consumo de água e fontes utilizadas</p>
+            <h3 className="text-lg font-semibold">Conformidade H├¡drica</h3>
+            <p className="text-sm text-muted-foreground">Consumo de ├ígua e fontes utilizadas</p>
           </div>
         </div>
       </div>
@@ -188,7 +188,7 @@ export default function WaterCompliance({ avgWaterConsumption: propAvgWater, bat
           <div>
             <span className="text-sm text-muted-foreground">Consumo Atual</span>
             <div className={`text-2xl font-bold ${waterColor}`}>
-              {avgWaterConsumption.toFixed(1)} <span className="text-lg font-normal">L/kgH₂</span>
+              {avgWaterConsumption.toFixed(1)} <span className="text-lg font-normal">L/kgHÔéé</span>
             </div>
           </div>
           <div className={`px-3 py-1 rounded-full text-sm font-medium ${waterBgClass} ${waterColor}`}>
@@ -228,18 +228,18 @@ export default function WaterCompliance({ avgWaterConsumption: propAvgWater, bat
           <div className="flex items-center gap-2">
             <Thermometer className="w-4 h-4 text-blue-600 dark:text-blue-400" />
             <span className="text-sm font-medium text-blue-700 dark:text-blue-400">
-              Economia de água: {(WATER_LIMIT - avgWaterConsumption).toFixed(1)} L/kgH₂ abaixo do limite
+              Economia de ├ígua: {(WATER_LIMIT - avgWaterConsumption).toFixed(1)} L/kgHÔéé abaixo do limite
             </span>
           </div>
           <p className="text-xs text-blue-600 dark:text-blue-500 mt-1">
-            Comparado com produção convencional (20-30 L/kgH₂)
+            Comparado com produ├º├úo convencional (20-30 L/kgHÔéé)
           </p>
         </div>
       </div>
 
       {/* Water sources distribution */}
       <div className="mb-6">
-        <h4 className="text-sm font-medium mb-4">Fontes de Água Utilizadas</h4>
+        <h4 className="text-sm font-medium mb-4">Fontes de ├ügua Utilizadas</h4>
         <div className="space-y-3">
           {waterSources.map((source, index) => (
             <div key={index} className="space-y-1">
@@ -270,12 +270,12 @@ export default function WaterCompliance({ avgWaterConsumption: propAvgWater, bat
             <div>
               <p className="text-sm font-medium">
                 {avgWaterConsumption <= WATER_LIMIT 
-                  ? "Em conformidade com padrões de sustentabilidade" 
-                  : "Atenção: consumo acima do limite recomendado"}
+                  ? "Em conformidade com padr├Áes de sustentabilidade" 
+                  : "Aten├º├úo: consumo acima do limite recomendado"}
               </p>
               <p className="text-xs text-muted-foreground mt-1">
                 {avgWaterConsumption <= TARGET 
-                  ? "Excelente eficiência no uso de recursos hídricos" 
+                  ? "Excelente efici├¬ncia no uso de recursos h├¡dricos" 
                   : "Considere otimizar processos para reduzir consumo"}
               </p>
             </div>
@@ -285,14 +285,14 @@ export default function WaterCompliance({ avgWaterConsumption: propAvgWater, bat
         {/* Water quality indicators */}
         <div className="grid grid-cols-2 gap-3">
           <div className="p-3 rounded-lg bg-green-50 dark:bg-green-900/20 border border-green-200 dark:border-green-800">
-            <div className="text-xs text-green-700 dark:text-green-400 font-medium">Água Não Potável</div>
+            <div className="text-xs text-green-700 dark:text-green-400 font-medium">├ügua N├úo Pot├ível</div>
             <div className="text-sm font-medium mt-1">57%</div>
-            <div className="text-xs text-green-600 dark:text-green-500">Dessalinização/Residual</div>
+            <div className="text-xs text-green-600 dark:text-green-500">Dessaliniza├º├úo/Residual</div>
           </div>
           <div className="p-3 rounded-lg bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800">
-            <div className="text-xs text-blue-700 dark:text-blue-400 font-medium">Recirculação</div>
+            <div className="text-xs text-blue-700 dark:text-blue-400 font-medium">Recircula├º├úo</div>
             <div className="text-sm font-medium mt-1">85%</div>
-            <div className="text-xs text-blue-600 dark:text-blue-500">Taxa de reutilização</div>
+            <div className="text-xs text-blue-600 dark:text-blue-500">Taxa de reutiliza├º├úo</div>
           </div>
         </div>
 
@@ -302,7 +302,7 @@ export default function WaterCompliance({ avgWaterConsumption: propAvgWater, bat
             Impacto Ambiental Reduzido
           </p>
           <p className="text-xs text-purple-600 dark:text-purple-500 mt-1">
-            Uso predominante de fontes alternativas reduz pressão sobre recursos hídricos potáveis
+            Uso predominante de fontes alternativas reduz press├úo sobre recursos h├¡dricos pot├íveis
           </p>
         </div>
       </div>

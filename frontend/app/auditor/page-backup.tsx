@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 
@@ -11,7 +11,7 @@ export default function AuditorPage() {
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Auditor H2V-Trust</h1>
           <p className="text-gray-600 mt-2">
-            Sistema de auditoria e verificação de certificados de hidrogênio verde
+            Sistema de auditoria e verifica├º├úo de certificados de hidrog├¬nio verde
           </p>
         </div>
 
@@ -41,12 +41,12 @@ export default function AuditorPage() {
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold text-gray-700 mb-4">Conformidade</h3>
             <p className="text-3xl font-bold text-blue-600">96.7%</p>
-            <p className="text-gray-500 text-sm mt-1">Taxa de aprovação</p>
+            <p className="text-gray-500 text-sm mt-1">Taxa de aprova├º├úo</p>
           </div>
 
           <div className="bg-white rounded-lg shadow p-6">
-            <h3 className="text-lg font-semibold text-gray-700 mb-4">Emissões Médias</h3>
-            <p className="text-3xl font-bold text-orange-600">2.1 kgCO₂e/kgH₂</p>
+            <h3 className="text-lg font-semibold text-gray-700 mb-4">Emiss├Áes M├®dias</h3>
+            <p className="text-3xl font-bold text-orange-600">2.1 kgCOÔéée/kgHÔéé</p>
             <p className="text-gray-500 text-sm mt-1">Abaixo do limite CBAM</p>
           </div>
         </div>
@@ -55,15 +55,15 @@ export default function AuditorPage() {
           <h2 className="text-xl font-bold text-gray-900 mb-4">Status do Sistema</h2>
           <div className="space-y-3">
             <div className="flex items-center justify-between p-3 bg-green-50 rounded">
-              <span className="text-green-700">✅ Módulo de Auditoria</span>
+              <span className="text-green-700">Ô£à M├│dulo de Auditoria</span>
               <span className="px-2 py-1 bg-green-100 text-green-800 text-sm rounded">Operacional</span>
             </div>
             <div className="flex items-center justify-between p-3 bg-blue-50 rounded">
-              <span className="text-blue-700">🔗 Conexão Blockchain</span>
+              <span className="text-blue-700">­ƒöù Conex├úo Blockchain</span>
               <span className="px-2 py-1 bg-blue-100 text-blue-800 text-sm rounded">Configurada</span>
             </div>
             <div className="flex items-center justify-between p-3 bg-purple-50 rounded">
-              <span className="text-purple-700">📊 Banco de Dados</span>
+              <span className="text-purple-700">­ƒôè Banco de Dados</span>
               <span className="px-2 py-1 bg-purple-100 text-purple-800 text-sm rounded">Sincronizado</span>
             </div>
           </div>

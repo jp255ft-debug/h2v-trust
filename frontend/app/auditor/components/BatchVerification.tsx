@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
 import { CheckCircle, XCircle, Cloud, Droplets, Zap, Search, FileText } from "lucide-react";
@@ -90,15 +90,15 @@ export default function BatchVerification({ batchId: initialBatchId, onVerify }:
               <div className="flex items-center gap-3 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
                 <Cloud className="h-5 w-5 text-blue-500" />
                 <div>
-                  <p className="text-xs text-muted-foreground">Emissões GHG</p>
-                  <p className="font-semibold">{batch.telemetry.ghg_emissions.toFixed(2)} kgCO₂e/kgH₂</p>
+                  <p className="text-xs text-muted-foreground">Emiss├Áes GHG</p>
+                  <p className="font-semibold">{batch.telemetry.ghg_emissions.toFixed(2)} kgCOÔéée/kgHÔéé</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 bg-cyan-50 dark:bg-cyan-950/20 rounded-lg">
                 <Droplets className="h-5 w-5 text-cyan-500" />
                 <div>
-                  <p className="text-xs text-muted-foreground">Consumo Água</p>
-                  <p className="font-semibold">{batch.telemetry.water_consumption_liters.toFixed(1)} L/kgH₂</p>
+                  <p className="text-xs text-muted-foreground">Consumo ├ügua</p>
+                  <p className="font-semibold">{batch.telemetry.water_consumption_liters.toFixed(1)} L/kgHÔéé</p>
                 </div>
               </div>
               <div className="flex items-center gap-3 p-3 bg-yellow-50 dark:bg-yellow-950/20 rounded-lg">
@@ -116,7 +116,7 @@ export default function BatchVerification({ batchId: initialBatchId, onVerify }:
             <div className="border-t pt-4">
               <h4 className="font-medium mb-3 flex items-center gap-2">
                 <FileText className="h-4 w-4" />
-                Relatório de Conformidade
+                Relat├│rio de Conformidade
               </h4>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <div className="p-3 bg-muted rounded-lg">
@@ -124,12 +124,12 @@ export default function BatchVerification({ batchId: initialBatchId, onVerify }:
                   <p className="font-semibold">{compliance.is_compliant ? "Aprovado" : "Reprovado"}</p>
                 </div>
                 <div className="p-3 bg-muted rounded-lg">
-                  <p className="text-xs text-muted-foreground">Emissões</p>
+                  <p className="text-xs text-muted-foreground">Emiss├Áes</p>
                   <p className="font-semibold">{compliance.ghg_emissions.toFixed(2)}</p>
                 </div>
                 <div className="p-3 bg-muted rounded-lg">
-                  <p className="text-xs text-muted-foreground">Água</p>
-                  <p className="font-semibold">{compliance.water_consumption.toFixed(1)} L/kgH₂</p>
+                  <p className="text-xs text-muted-foreground">├ügua</p>
+                  <p className="font-semibold">{compliance.water_consumption.toFixed(1)} L/kgHÔéé</p>
                 </div>
                 <div className="p-3 bg-muted rounded-lg">
                   <p className="text-xs text-muted-foreground">Energia</p>
@@ -145,7 +145,7 @@ export default function BatchVerification({ batchId: initialBatchId, onVerify }:
               onClick={handleVerify}
               className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm hover:bg-blue-700 transition"
             >
-              {batch.is_compliant ? "Emitir Certificado" : "Solicitar Revisão"}
+              {batch.is_compliant ? "Emitir Certificado" : "Solicitar Revis├úo"}
             </button>
             <button className="border px-4 py-2 rounded-md text-sm hover:bg-muted transition">
               Exportar
@@ -158,7 +158,7 @@ export default function BatchVerification({ batchId: initialBatchId, onVerify }:
       {!batch && !batchLoading && !batchError && (
         <div className="text-center py-12 text-muted-foreground">
           <Search className="h-12 w-12 mx-auto mb-4 opacity-50" />
-          <p>Digite o ID de um lote para iniciar a verificação</p>
+          <p>Digite o ID de um lote para iniciar a verifica├º├úo</p>
         </div>
       )}
     </div>

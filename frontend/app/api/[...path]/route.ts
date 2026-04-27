@@ -313,3 +313,5 @@ export const dynamic = 'force-dynamic'; // Sempre executar dinamicamente
 export const runtime = 'nodejs'; // Usar runtime Node.js
 export const maxDuration = 30; // Timeout máximo de 30 segundos
 
+// Configuração de CORS para preflight requests
+// Integrado no handler OPTIONS acima

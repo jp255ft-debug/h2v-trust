@@ -1,15 +1,14 @@
-"use client";
+﻿"use client";
 
-import Navbar from "@/components/layout/Navbar";
-
-export default function CertificatesPage() {
+export default function ProducerCertificatesPage() {
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
-      <main className="container mx-auto px-4 py-8">
-        <h1 className="text-3xl font-bold mb-6">Certificados</h1>
-        <p className="text-muted-foreground">Página de certificados em desenvolvimento.</p>
-      </main>
+      <div className="container mx-auto p-6">
+        <h1 className="text-3xl font-bold tracking-tight">Certificados</h1>
+        <p className="text-muted-foreground mt-2">
+          Gerencie seus certificados de hidrogênio verde
+        </p>
+      </div>
     </div>
   );
 }

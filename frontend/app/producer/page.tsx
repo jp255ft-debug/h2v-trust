@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import {
@@ -27,23 +27,11 @@ import {
   PlusCircle,
   AlertTriangle,
 } from "lucide-react";
-import Navbar from "../../src/components/layout/Navbar";
-import { fetchBatches, fetchStats } from "../../src/lib/api";
-import type { Batch } from "../../src/types/batch";
+import Navbar from "@/components/layout/Navbar";
+import { fetchBatches, fetchStats } from "@/lib/api";
 
-interface LoteProdutor {
-  id: string;
-  tamanhoKg: number;
-  emissoesGhg: number;
-  consumoAgua: number;
-  conforme: boolean;
-  data: string;
-  status: string;
-  pontuacao: number;
-}
-
-// Dados mock para demonstração
-const mockLotesProdutor: LoteProdutor[] = [
+// Dados mock para demonstra├º├úo
+const mockLotesProdutor = [
   {
     id: "batch_045",
     tamanhoKg: 1800,
@@ -71,7 +59,7 @@ const mockLotesProdutor: LoteProdutor[] = [
     consumoAgua: 15.2,
     conforme: false,
     data: "2024-06-13",
-    status: "Atenção Necessária",
+    status: "Aten├º├úo Necess├íria",
     pontuacao: 58,
   },
   {
@@ -134,7 +122,7 @@ export default function PainelProdutor() {
     certificadosEmitidos: 0,
     tendenciaConformidade: "+0%",
   });
-  const [lotesProdutor, setLotesProdutor] = useState<LoteProdutor[]>(mockLotesProdutor);
+  const [lotesProdutor, setLotesProdutor] = useState(mockLotesProdutor);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -156,7 +144,7 @@ export default function PainelProdutor() {
           consumoAgua: batch.telemetry?.water_consumption_liters || 0,
           conforme: batch.is_compliant,
           data: batch.created_at ? new Date(batch.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-          status: batch.is_compliant ? "Verificado" : "Atenção Necessária",
+          status: batch.is_compliant ? "Verificado" : "Aten├º├úo Necess├íria",
           pontuacao: batch.is_compliant ? Math.floor(Math.random() * 20) + 80 : Math.floor(Math.random() * 40) + 40,
         }));
         
@@ -211,7 +199,7 @@ export default function PainelProdutor() {
     setNovoLote({ tamanhoKg: "", emissoesGhg: "", consumoAgua: "" });
   };
 
-  // Função para baixar o PDF Oficial CBAM
+  // Fun├º├úo para baixar o PDF Oficial CBAM
   const handleGenerateReport = async () => {
     try {
       const year = new Date().getFullYear();
@@ -222,7 +210,7 @@ export default function PainelProdutor() {
         }
       });
 
-      if (!response.ok) throw new Error("Falha ao gerar o relatório");
+      if (!response.ok) throw new Error("Falha ao gerar o relat├│rio");
 
       const blob = await response.blob();
       const url = window.URL.createObjectURL(blob);
@@ -234,12 +222,12 @@ export default function PainelProdutor() {
       link.remove();
       window.URL.revokeObjectURL(url);
     } catch (error) {
-      console.error("Erro ao baixar relatório:", error);
-      alert("Erro ao gerar relatório oficial. Verifique se o backend está rodando.");
+      console.error("Erro ao baixar relat├│rio:", error);
+      alert("Erro ao gerar relat├│rio oficial. Verifique se o backend est├í rodando.");
     }
   };
 
-  // Função para baixar a planilha de dados (CSV)
+  // Fun├º├úo para baixar a planilha de dados (CSV)
   const handleExportData = async () => {
     try {
       const year = new Date().getFullYear();
@@ -263,28 +251,28 @@ export default function PainelProdutor() {
       window.URL.revokeObjectURL(url);
     } catch (error) {
       console.error("Erro ao exportar CSV:", error);
-      alert("Erro ao exportar dados. Verifique se o backend está rodando.");
+      alert("Erro ao exportar dados. Verifique se o backend est├í rodando.");
     }
   };
 
   const handleBaixarCertificado = (idLote: string, status: string) => {
-    if (status === "Atenção Necessária") {
-      alert(`O lote ${idLote} possui não-conformidades e não pode ser certificado no padrão CBAM.`);
+    if (status === "Aten├º├úo Necess├íria") {
+      alert(`O lote ${idLote} possui n├úo-conformidades e n├úo pode ser certificado no padr├úo CBAM.`);
       return;
     }
-    alert(`Redirecionando para a prova criptográfica (SBT) do lote ${idLote} na Polygon Explorer...`);
+    alert(`Redirecionando para a prova criptogr├ífica (SBT) do lote ${idLote} na Polygon Explorer...`);
   };
 
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <div className="container mx-auto p-6 space-y-6">
-      {/* Cabeçalho */}
+      {/* Cabe├ºalho */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Painel do Produtor</h1>
           <p className="text-muted-foreground">
-            Gerencie sua produção de hidrogênio verde e relatórios de conformidade
+            Gerencie sua produ├º├úo de hidrog├¬nio verde e relat├│rios de conformidade
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -316,7 +304,7 @@ export default function PainelProdutor() {
                 onClick={() => setExibirFormNovoLote(false)}
                 className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
               >
-                ✕
+                Ô£ò
               </button>
             </div>
             <form onSubmit={handleSubmitNovoLote} className="space-y-4">
@@ -332,7 +320,7 @@ export default function PainelProdutor() {
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Emissões GHG (kgCO₂e/kgH₂)</label>
+                <label className="block text-sm font-medium mb-1">Emiss├Áes GHG (kgCOÔéée/kgHÔéé)</label>
                 <input
                   type="number"
                   step="0.1"
@@ -342,10 +330,10 @@ export default function PainelProdutor() {
                   onChange={(e) => setNovoLote({ ...novoLote, emissoesGhg: e.target.value })}
                   placeholder="Ex: 2.8"
                 />
-                <p className="text-xs text-gray-500 mt-1">Limite CBAM: 3.4 kgCO₂e/kgH₂</p>
+                <p className="text-xs text-gray-500 mt-1">Limite CBAM: 3.4 kgCOÔéée/kgHÔéé</p>
               </div>
               <div>
-                <label className="block text-sm font-medium mb-1">Consumo de Água (L/kgH₂)</label>
+                <label className="block text-sm font-medium mb-1">Consumo de ├ügua (L/kgHÔéé)</label>
                 <input
                   type="number"
                   step="0.1"
@@ -355,7 +343,7 @@ export default function PainelProdutor() {
                   onChange={(e) => setNovoLote({ ...novoLote, consumoAgua: e.target.value })}
                   placeholder="Ex: 12.5"
                 />
-                <p className="text-xs text-gray-500 mt-1">Limite recomendado: 15 L/kgH₂</p>
+                <p className="text-xs text-gray-500 mt-1">Limite recomendado: 15 L/kgHÔéé</p>
               </div>
               <div className="flex justify-end gap-2 pt-4">
                 <button
@@ -377,18 +365,18 @@ export default function PainelProdutor() {
         </div>
       )}
 
-      {/* Métricas principais */}
+      {/* M├®tricas principais */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="border rounded-lg p-6">
           <div className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <div className="text-sm font-medium">Produção Total</div>
+            <div className="text-sm font-medium">Produ├º├úo Total</div>
             <Factory className="h-4 w-4 text-gray-400" />
           </div>
           <div className="pt-2">
             <div className="text-2xl font-bold">{estatisticasProdutor.producaoTotal.toLocaleString('pt-BR')} kg</div>
             <div className="flex items-center text-sm text-gray-500 mt-1">
               <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-              <span>Hidrogênio verde produzido</span>
+              <span>Hidrog├¬nio verde produzido</span>
             </div>
           </div>
         </div>
@@ -409,11 +397,11 @@ export default function PainelProdutor() {
 
         <div className="border rounded-lg p-6">
           <div className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <div className="text-sm font-medium">Média Emissões GHG</div>
+            <div className="text-sm font-medium">M├®dia Emiss├Áes GHG</div>
             <Cloud className="h-4 w-4 text-gray-400" />
           </div>
           <div className="pt-2">
-            <div className="text-2xl font-bold">{estatisticasProdutor.mediaEmissoesGhg} kgCO₂e/kgH₂</div>
+            <div className="text-2xl font-bold">{estatisticasProdutor.mediaEmissoesGhg} kgCOÔéée/kgHÔéé</div>
             <div className="flex items-center text-sm text-gray-500 mt-1">
               <TrendingDown className="h-4 w-4 text-green-500 mr-1" />
               <span>Abaixo do limite CBAM</span>
@@ -435,12 +423,12 @@ export default function PainelProdutor() {
         </div>
       </div>
 
-      {/* Gráficos */}
+      {/* Gr├íficos */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <div className="border rounded-lg p-6">
           <div className="mb-4">
-            <h2 className="text-xl font-bold">Tendência Mensal de Desempenho</h2>
-            <p className="text-gray-500">Evolução das emissões GHG e consumo de água</p>
+            <h2 className="text-xl font-bold">Tend├¬ncia Mensal de Desempenho</h2>
+            <p className="text-gray-500">Evolu├º├úo das emiss├Áes GHG e consumo de ├ígua</p>
           </div>
           <div className="h-80">
             <ResponsiveContainer width="100%" height="100%">
@@ -455,7 +443,7 @@ export default function PainelProdutor() {
                   yAxisId="left"
                   type="monotone"
                   dataKey="ghg"
-                  name="Emissões GHG (kgCO₂e/kgH₂)"
+                  name="Emiss├Áes GHG (kgCOÔéée/kgHÔéé)"
                   stroke="#3b82f6"
                   strokeWidth={2}
                 />
@@ -463,7 +451,7 @@ export default function PainelProdutor() {
                   yAxisId="left"
                   type="monotone"
                   dataKey="agua"
-                  name="Consumo Água (L/kgH₂)"
+                  name="Consumo ├ügua (L/kgHÔéé)"
                   stroke="#06b6d4"
                   strokeWidth={2}
                 />
@@ -482,8 +470,8 @@ export default function PainelProdutor() {
 
         <div className="border rounded-lg p-6">
           <div className="mb-4">
-            <h2 className="text-xl font-bold">Visão Geral dos Lotes</h2>
-            <p className="text-gray-500">Distribuição dos seus lotes de produção</p>
+            <h2 className="text-xl font-bold">Vis├úo Geral dos Lotes</h2>
+            <p className="text-gray-500">Distribui├º├úo dos seus lotes de produ├º├úo</p>
           </div>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
@@ -496,14 +484,14 @@ export default function PainelProdutor() {
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
-                <span>Verificação Pendente</span>
+                <span>Verifica├º├úo Pendente</span>
               </div>
               <span className="font-semibold">{estatisticasProdutor.pendentesVerificacao} lotes</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-red-500"></div>
-                <span>Necessitam Atenção</span>
+                <span>Necessitam Aten├º├úo</span>
               </div>
               <span className="font-semibold">3 lotes</span>
             </div>
@@ -517,11 +505,11 @@ export default function PainelProdutor() {
           </div>
 
           <div className="mt-6 pt-6 border-t">
-            <h3 className="font-medium mb-3">Ações Rápidas</h3>
+            <h3 className="font-medium mb-3">A├º├Áes R├ípidas</h3>
             <div className="grid grid-cols-2 gap-2">
               <button onClick={handleGenerateReport} className="border rounded-md p-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 flex flex-col items-center justify-center">
                 <FileText className="h-5 w-5 mb-1 text-blue-500" />
-                <span>Gerar Relatório</span>
+                <span>Gerar Relat├│rio</span>
               </button>
               <button onClick={handleExportData} className="border rounded-md p-3 text-sm hover:bg-gray-100 dark:hover:bg-gray-800 flex flex-col items-center justify-center">
                 <Download className="h-5 w-5 mb-1 text-green-500" />
@@ -536,8 +524,8 @@ export default function PainelProdutor() {
       <div className="border rounded-lg p-6">
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h2 className="text-xl font-bold">Lotes de Produção Recentes</h2>
-            <p className="text-gray-500">Seus últimos lotes de hidrogênio verde</p>
+            <h2 className="text-xl font-bold">Lotes de Produ├º├úo Recentes</h2>
+            <p className="text-gray-500">Seus ├║ltimos lotes de hidrog├¬nio verde</p>
           </div>
           <button className="border rounded-md px-3 py-1 text-sm">
             Ver Todos ({estatisticasProdutor.totalLotes})
@@ -550,15 +538,15 @@ export default function PainelProdutor() {
               <tr className="border-b">
                 <th className="text-left py-3 px-4 font-medium">ID do Lote</th>
                 <th className="text-left py-3 px-4 font-medium">Tamanho (kg)</th>
-                <th className="text-left py-3 px-4 font-medium">Emissões GHG</th>
-                <th className="text-left py-3 px-4 font-medium">Água</th>
+                <th className="text-left py-3 px-4 font-medium">Emiss├Áes GHG</th>
+                <th className="text-left py-3 px-4 font-medium">├ügua</th>
                 <th className="text-left py-3 px-4 font-medium">Status</th>
-                <th className="text-left py-3 px-4 font-medium">Pontuação</th>
-                <th className="text-left py-3 px-4 font-medium">Ações</th>
+                <th className="text-left py-3 px-4 font-medium">Pontua├º├úo</th>
+                <th className="text-left py-3 px-4 font-medium">A├º├Áes</th>
               </tr>
             </thead>
             <tbody>
-              {lotesProdutor.map((lote: LoteProdutor) => (
+              {lotesProdutor.map((lote: any) => (
                 <tr key={lote.id} className="border-b hover:bg-gray-100 dark:hover:bg-gray-800">
                   <td className="py-3 px-4">
                     <div className="font-medium">{lote.id}</div>
@@ -568,15 +556,15 @@ export default function PainelProdutor() {
                     <div className="font-semibold">{lote.tamanhoKg.toLocaleString('pt-BR')} kg</div>
                   </td>
                   <td className="py-3 px-4">
-                    <div className="font-semibold">{lote.emissoesGhg} kgCO₂e/kgH₂</div>
+                    <div className="font-semibold">{lote.emissoesGhg} kgCOÔéée/kgHÔéé</div>
                     <div className={`text-xs ${lote.emissoesGhg <= 3.4 ? "text-green-600" : "text-red-600"}`}>
-                      {lote.emissoesGhg <= 3.4 ? "✓ Dentro do limite" : "✗ Acima do limite"}
+                      {lote.emissoesGhg <= 3.4 ? "Ô£ô Dentro do limite" : "Ô£ù Acima do limite"}
                     </div>
                   </td>
                   <td className="py-3 px-4">
-                    <div className="font-semibold">{lote.consumoAgua} L/kgH₂</div>
+                    <div className="font-semibold">{lote.consumoAgua} L/kgHÔéé</div>
                     <div className={`text-xs ${lote.consumoAgua <= 15 ? "text-blue-600" : "text-orange-600"}`}>
-                      {lote.consumoAgua <= 15 ? "✓ Dentro do limite" : "✗ Acima do limite"}
+                      {lote.consumoAgua <= 15 ? "Ô£ô Dentro do limite" : "Ô£ù Acima do limite"}
                     </div>
                   </td>
                   <td className="py-3 px-4">
@@ -616,7 +604,7 @@ export default function PainelProdutor() {
                         <Download className="h-4 w-4 inline mr-1" />
                         Cert
                       </button>
-                      {lote.status === "Atenção Necessária" && (
+                      {lote.status === "Aten├º├úo Necess├íria" && (
                         <button className="text-red-600 hover:text-red-800 text-sm">
                           <AlertTriangle className="h-4 w-4 inline mr-1" />
                           Corrigir
@@ -634,32 +622,32 @@ export default function PainelProdutor() {
       {/* Dicas de conformidade */}
       <div className="border rounded-lg p-6">
         <div className="mb-4">
-          <h2 className="text-xl font-bold">Dicas e Recomendações de Conformidade</h2>
+          <h2 className="text-xl font-bold">Dicas e Recomenda├º├Áes de Conformidade</h2>
           <p className="text-gray-500">Melhore seu desempenho ambiental</p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div className="border rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <Cloud className="h-5 w-5 text-blue-500" />
-              <h3 className="font-semibold">Reduza as Emissões GHG</h3>
+              <h3 className="font-semibold">Reduza as Emiss├Áes GHG</h3>
             </div>
             <ul className="text-sm text-gray-600 space-y-1">
-              <li>• Otimize a eficiência dos eletrolisadores</li>
-              <li>• Use fontes de energia renovável</li>
-              <li>• Implemente sistemas de captura de carbono</li>
-              <li>• Manutenção regular dos equipamentos</li>
+              <li>ÔÇó Otimize a efici├¬ncia dos eletrolisadores</li>
+              <li>ÔÇó Use fontes de energia renov├ível</li>
+              <li>ÔÇó Implemente sistemas de captura de carbono</li>
+              <li>ÔÇó Manuten├º├úo regular dos equipamentos</li>
             </ul>
           </div>
           <div className="border rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
               <Droplets className="h-5 w-5 text-blue-500" />
-              <h3 className="font-semibold">Melhore a Eficiência Hídrica</h3>
+              <h3 className="font-semibold">Melhore a Efici├¬ncia H├¡drica</h3>
             </div>
             <ul className="text-sm text-gray-600 space-y-1">
-              <li>• Implemente sistemas de reciclagem de água</li>
-              <li>• Use água de alimentação de alta qualidade</li>
-              <li>• Monitore o consumo em tempo real</li>
-              <li>• Calibração regular do sistema</li>
+              <li>ÔÇó Implemente sistemas de reciclagem de ├ígua</li>
+              <li>ÔÇó Use ├ígua de alimenta├º├úo de alta qualidade</li>
+              <li>ÔÇó Monitore o consumo em tempo real</li>
+              <li>ÔÇó Calibra├º├úo regular do sistema</li>
             </ul>
           </div>
         </div>

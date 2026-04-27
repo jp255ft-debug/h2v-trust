@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
@@ -44,7 +44,7 @@ export default function AuditorPage() {
 
   const handleSearch = () => {
     setIsLoading(true);
-    // Simular chamada à API
+    // Simular chamada ├á API
     setTimeout(() => {
       setSearchResult({
         id: "cert_001",
@@ -61,7 +61,7 @@ export default function AuditorPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Menu de navegação */}
+      {/* Menu de navega├º├úo */}
       <nav className="border-b bg-card">
         <div className="max-w-7xl mx-auto px-6 py-4">
           <div className="flex items-center gap-6">
@@ -83,13 +83,13 @@ export default function AuditorPage() {
         </div>
       </nav>
 
-      {/* Conteúdo principal */}
+      {/* Conte├║do principal */}
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
-        {/* Cabeçalho */}
+        {/* Cabe├ºalho */}
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">Auditor H2V-Trust</h1>
           <p className="text-muted-foreground mt-2">
-            Sistema de auditoria e verificação de certificados de hidrogênio verde
+            Sistema de auditoria e verifica├º├úo de certificados de hidrog├¬nio verde
           </p>
         </div>
 
@@ -124,17 +124,17 @@ export default function AuditorPage() {
                   <p className="text-sm text-muted-foreground">Produtor: {searchResult.producer}</p>
                 </div>
                 <span className={`px-2 py-1 rounded-full text-xs font-medium ${searchResult.isCompliant ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"}`}>
-                  {searchResult.isCompliant ? "Conforme" : "Não conforme"}
+                  {searchResult.isCompliant ? "Conforme" : "N├úo conforme"}
                 </span>
               </div>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
                 <div>
-                  <p className="text-xs text-muted-foreground">Emissões GHG</p>
-                  <p className="font-semibold text-foreground">{searchResult.ghgEmissions} kgCO₂e/kgH₂</p>
+                  <p className="text-xs text-muted-foreground">Emiss├Áes GHG</p>
+                  <p className="font-semibold text-foreground">{searchResult.ghgEmissions} kgCOÔéée/kgHÔéé</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Consumo de Água</p>
-                  <p className="font-semibold text-foreground">{searchResult.waterConsumption} L/kgH₂</p>
+                  <p className="text-xs text-muted-foreground">Consumo de ├ügua</p>
+                  <p className="font-semibold text-foreground">{searchResult.waterConsumption} L/kgHÔéé</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Verificado em</p>
@@ -145,7 +145,7 @@ export default function AuditorPage() {
           )}
         </div>
 
-        {/* Cards de métricas */}
+        {/* Cards de m├®tricas */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-card rounded-lg border shadow-sm p-6">
             <div className="flex items-center justify-between">
@@ -162,15 +162,15 @@ export default function AuditorPage() {
               <CheckCircle className="h-4 w-4 text-muted-foreground" />
             </div>
             <p className="text-2xl font-bold mt-2 text-foreground">{stats.complianceRate}%</p>
-            <p className="text-xs text-muted-foreground mt-1">Taxa de aprovação</p>
+            <p className="text-xs text-muted-foreground mt-1">Taxa de aprova├º├úo</p>
           </div>
 
           <div className="bg-card rounded-lg border shadow-sm p-6">
             <div className="flex items-center justify-between">
-              <p className="text-sm font-medium text-muted-foreground">Emissões Médias</p>
+              <p className="text-sm font-medium text-muted-foreground">Emiss├Áes M├®dias</p>
               <Cloud className="h-4 w-4 text-muted-foreground" />
             </div>
-            <p className="text-2xl font-bold mt-2 text-foreground">{stats.avgEmissions} kgCO₂e/kgH₂</p>
+            <p className="text-2xl font-bold mt-2 text-foreground">{stats.avgEmissions} kgCOÔéée/kgHÔéé</p>
             <p className="text-xs text-muted-foreground mt-1">Abaixo do limite CBAM</p>
           </div>
         </div>
@@ -183,7 +183,7 @@ export default function AuditorPage() {
           <div className="p-6 pt-0 space-y-4">
             <div className="flex items-center justify-between p-4 rounded-lg border bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800">
               <div>
-                <p className="font-medium text-green-700 dark:text-green-400">✅ Módulo de Auditoria</p>
+                <p className="font-medium text-green-700 dark:text-green-400">Ô£à M├│dulo de Auditoria</p>
                 <p className="text-sm text-green-600 dark:text-green-500">Operacional</p>
               </div>
               <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
@@ -193,7 +193,7 @@ export default function AuditorPage() {
 
             <div className="flex items-center justify-between p-4 rounded-lg border bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
               <div>
-                <p className="font-medium text-blue-700 dark:text-blue-400">🔗 Conexão Blockchain</p>
+                <p className="font-medium text-blue-700 dark:text-blue-400">­ƒöù Conex├úo Blockchain</p>
                 <p className="text-sm text-blue-600 dark:text-blue-500">Configurada</p>
               </div>
               <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
@@ -203,7 +203,7 @@ export default function AuditorPage() {
 
             <div className="flex items-center justify-between p-4 rounded-lg border bg-purple-50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800">
               <div>
-                <p className="font-medium text-purple-700 dark:text-purple-400">📊 Banco de Dados</p>
+                <p className="font-medium text-purple-700 dark:text-purple-400">­ƒôè Banco de Dados</p>
                 <p className="text-sm text-purple-600 dark:text-purple-500">Sincronizado</p>
               </div>
               <span className="px-3 py-1 rounded-full text-sm font-medium bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200">
