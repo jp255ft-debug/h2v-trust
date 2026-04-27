@@ -21,6 +21,14 @@ const nextConfig = {
     config.resolve.alias['@'] = path.resolve(__dirname, 'src');
     return config;
   },
+  // Configuração para Turbopack (usado pelo Render e Vercel)
+  experimental: {
+    turbo: {
+      resolveAlias: {
+        '@': path.resolve(__dirname, 'src'),
+      },
+    },
+  },
 };
 
 module.exports = nextConfig;

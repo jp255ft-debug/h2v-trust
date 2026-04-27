@@ -203,7 +203,7 @@ export default function PainelProdutor() {
   const handleGenerateReport = async () => {
     try {
       const year = new Date().getFullYear();
-      const response = await fetch(`http://localhost:8000/api/v1/reports/cbam/${year}/download?format=pdf`, {
+      const response = await fetch(`/api/v1/reports/cbam/${year}/download?format=pdf`, {
         method: 'GET',
         headers: {
           "X-API-Key": "test-secret-key-for-local-development-12345"
@@ -231,7 +231,7 @@ export default function PainelProdutor() {
   const handleExportData = async () => {
     try {
       const year = new Date().getFullYear();
-      const response = await fetch(`http://localhost:8000/api/v1/reports/cbam/${year}/download?format=csv`, {
+      const response = await fetch(`/api/v1/reports/cbam/${year}/download?format=csv`, {
         method: 'GET',
         headers: {
           "X-API-Key": "test-secret-key-for-local-development-12345"

@@ -47,6 +47,8 @@ class BatchService:
 
     def get_batches(self, skip: int, limit: int, producer_id: Optional[str], compliant_only: bool) -> List[Dict]:
         query = self.db.query(BatchORM).options(joinedload(BatchORM.telemetry))
+        if producer_id:
+            query = query.filter(BatchORM.producer_id == producer_id)
         if compliant_only:
             query = query.filter(BatchORM.is_compliant == True)
         batches = query.offset(skip).limit(limit).all()

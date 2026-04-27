@@ -2,11 +2,15 @@
   "name": "h2v-trust-frontend",
   "version": "1.0.0",
   "private": true,
+  "engines": {
+    "node": ">=20.0.0 <22.0.0"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "clean": "rm -rf .next"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.0.5",

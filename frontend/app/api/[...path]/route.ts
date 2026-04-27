@@ -12,6 +12,7 @@ const FORWARDED_HEADERS = [
   'user-agent',
   'x-forwarded-for',
   'x-real-ip',
+  'x-api-key',
 ];
 
 // Rotas que não precisam de autenticação

@@ -1,0 +1,12 @@
+node_modules/
+.next/
+.git/
+*.md
+.env
+.env.local
+.env.production
+.env.example
+.gitignore
+venv/
+__pycache__/
+*.pyc

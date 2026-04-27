@@ -1,0 +1,4 @@
+# SSL certificates directory
+# Place your SSL certificates here:
+# - nginx/ssl/fullchain.pem
+# - nginx/ssl/privkey.pem
