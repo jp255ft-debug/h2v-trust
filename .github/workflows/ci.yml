@@ -1,0 +1,102 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend-tests:
+    name: Backend Tests
+    runs-on: ubuntu-latest
+    services:
+      timescaledb:
+        image: timescale/timescaledb:latest-pg16
+        env:
+          POSTGRES_USER: h2v_user
+          POSTGRES_PASSWORD: h2v_password
+          POSTGRES_DB: h2v_trust_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+      redis:
+        image: redis:7-alpine
+        ports:
+          - 6379:6379
+        options: >-
+          --health-cmd "redis-cli ping"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Install dependencies
+        run: |
+          cd backend
+          pip install -r requirements.prod.txt
+          pip install pytest pytest-cov httpx
+      - name: Lint with Ruff
+        run: |
+          pip install ruff
+          ruff check backend/ --select E,F,I,N,W
+      - name: Run tests
+        env:
+          DATABASE_URL: postgresql://h2v_user:h2v_password@localhost:5432/h2v_trust_test
+          REDIS_URL: redis://localhost:6379
+          SECRET_KEY: test-secret-key-for-ci
+          POLYGON_RPC_URL: http://localhost:8545
+          MOCK_MODE: "true"
+        run: |
+          cd backend
+          python -m pytest tests/ -v --cov=. --cov-report=term-missing -x
+
+  frontend-tests:
+    name: Frontend Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Install dependencies
+        run: |
+          cd frontend
+          npm ci
+      - name: Type check
+        run: |
+          cd frontend
+          npx tsc --noEmit
+      - name: Build
+        run: |
+          cd frontend
+          npm run build
+
+  docker-build:
+    name: Docker Build Validation
+    runs-on: ubuntu-latest
+    needs: [backend-tests, frontend-tests]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build Docker images
+        run: |
+          docker compose -f docker-compose.yml build backend frontend
+      - name: Start services
+        run: |
+          docker compose -f docker-compose.yml up -d --remove-orphans
+          sleep 30
+          docker compose ps
+      - name: Health check
+        run: |
+          curl -s --fail http://localhost:8000/health || exit 1
+          curl -s --fail http://localhost:3000 || exit 1
+      - name: Stop services
+        run: |
+          docker compose -f docker-compose.yml down --remove-orphans
