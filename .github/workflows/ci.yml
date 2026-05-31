@@ -44,9 +44,6 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-    defaults:
-      run:
-        working-directory: backend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -54,15 +51,16 @@ jobs:
           python-version: '3.11'
       - name: Install dependencies
         run: |
-          pip install -r requirements.prod.txt
+          pip install -r backend/requirements.prod.txt
           pip install pytest pytest-cov httpx
-      - name: Run backend tests (inside backend/)
+      - name: Install backend package
         run: |
-          python -m pytest tests/ -v --cov=. --cov-report=term-missing -x
-      - name: Run root tests (from project root)
-        run: |
-          cd ..
           pip install -e backend/
+      - name: Run backend tests
+        run: |
+          python -m pytest backend/tests/ -v --cov=backend --cov-report=term-missing -x
+      - name: Run root tests
+        run: |
           python -m pytest tests/ -v -x --ignore=tests/test_e2e_certification_flow.py --ignore=tests/test_oracle.py
 
   frontend-tests:
