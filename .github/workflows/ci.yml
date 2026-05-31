@@ -6,6 +6,17 @@ on:
   pull_request:
     branches: [main]
 
+env:
+  # Backend
+  DATABASE_URL: postgresql://h2v_user:h2v_password@localhost:5432/h2v_trust_test
+  REDIS_URL: redis://localhost:6379
+  SECRET_KEY: test-secret-key-for-ci
+  POLYGON_RPC_URL: http://localhost:8545
+  MOCK_MODE: "true"
+  # Frontend
+  NEXT_PUBLIC_API_URL: http://localhost:8000
+  NEXT_PUBLIC_API_KEY: test-secret-key-for-local-development-12345
+
 jobs:
   backend-tests:
     name: Backend Tests
@@ -33,6 +44,9 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
+    defaults:
+      run:
+        working-directory: backend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -40,44 +54,38 @@ jobs:
           python-version: '3.11'
       - name: Install dependencies
         run: |
-          cd backend
           pip install -r requirements.prod.txt
           pip install pytest pytest-cov httpx
       - name: Lint with Ruff
         run: |
           pip install ruff
-          ruff check backend/ --select E,F,I,N,W
-      - name: Run tests
-        env:
-          DATABASE_URL: postgresql://h2v_user:h2v_password@localhost:5432/h2v_trust_test
-          REDIS_URL: redis://localhost:6379
-          SECRET_KEY: test-secret-key-for-ci
-          POLYGON_RPC_URL: http://localhost:8545
-          MOCK_MODE: "true"
+          ruff check . --select E,F,I,N,W
+      - name: Run backend tests (inside backend/)
         run: |
-          cd backend
           python -m pytest tests/ -v --cov=. --cov-report=term-missing -x
+      - name: Run root tests (from project root)
+        run: |
+          cd ..
+          pip install -e backend/
+          python -m pytest tests/ -v -x --ignore=tests/test_e2e_certification_flow.py
 
   frontend-tests:
     name: Frontend Tests
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
       - name: Install dependencies
-        run: |
-          cd frontend
-          npm ci
+        run: npm ci
       - name: Type check
-        run: |
-          cd frontend
-          npx tsc --noEmit
+        run: npx tsc --noEmit
       - name: Build
-        run: |
-          cd frontend
-          npm run build
+        run: npm run build
 
   docker-build:
     name: Docker Build Validation
@@ -85,6 +93,11 @@ jobs:
     needs: [backend-tests, frontend-tests]
     steps:
       - uses: actions/checkout@v4
+      - name: Create .env file for Docker
+        run: |
+          cp .env.example .env
+          echo "SECRET_KEY=test-secret-key-for-ci" >> .env
+          echo "MOCK_MODE=true" >> .env
       - name: Build Docker images
         run: |
           docker compose -f docker-compose.yml build backend frontend
