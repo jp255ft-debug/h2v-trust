@@ -1,5 +1,9 @@
 from web3 import Web3
-from web3.middleware import geth_poa_middleware
+try:
+    from web3.middleware import ExtraDataToPOAMiddleware
+except ImportError:
+    # web3.py >= 7.x renamed ExtraDataToPOAMiddleware
+    from web3.middleware import geth_poa_middleware as ExtraDataToPOAMiddleware
 import json
 import os
 import logging
@@ -235,7 +239,7 @@ def init_web3(force_reload=False):
         
         if "localhost" in rpc_url or "127.0.0.1" in rpc_url or "8545" in rpc_url:
             logger.info("Injecting PoA middleware for Hardhat/local network")
-            w3.middleware_onion.inject(geth_poa_middleware, layer=0)
+            w3.middleware_onion.inject(ExtraDataToPOAMiddleware, layer=0)
         
         contract_address = settings.CONTRACT_ADDRESS
         if contract_address:

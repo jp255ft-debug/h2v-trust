@@ -13,6 +13,8 @@
     "clean": "rm -rf .next"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^5.11.2",
+    "@govbr-ds/react-components": "^2.15.1",
     "@radix-ui/react-dialog": "^1.0.5",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.0",
@@ -26,6 +28,7 @@
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",
     "viem": "^2.9.0",
+    "vlibras-nextjs": "^1.1.2",
     "wagmi": "^2.9.0"
   },
   "devDependencies": {

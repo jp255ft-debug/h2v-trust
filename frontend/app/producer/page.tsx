@@ -27,84 +27,12 @@ import {
   PlusCircle,
   AlertTriangle,
 } from "lucide-react";
-import Navbar from "@/components/layout/Navbar";
 import { fetchBatches, fetchStats } from "@/lib/api";
-
-// Dados mock para demonstração
-const mockLotesProdutor = [
-  {
-    id: "batch_045",
-    tamanhoKg: 1800,
-    emissoesGhg: 2.3,
-    consumoAgua: 11.8,
-    conforme: true,
-    data: "2024-06-15",
-    status: "Verificado",
-    pontuacao: 94,
-  },
-  {
-    id: "batch_044",
-    tamanhoKg: 2200,
-    emissoesGhg: 3.1,
-    consumoAgua: 13.5,
-    conforme: true,
-    data: "2024-06-14",
-    status: "Verificado",
-    pontuacao: 82,
-  },
-  {
-    id: "batch_043",
-    tamanhoKg: 1500,
-    emissoesGhg: 3.8,
-    consumoAgua: 15.2,
-    conforme: false,
-    data: "2024-06-13",
-    status: "Atenção Necessária",
-    pontuacao: 58,
-  },
-  {
-    id: "batch_042",
-    tamanhoKg: 3000,
-    emissoesGhg: 2.1,
-    consumoAgua: 10.8,
-    conforme: true,
-    data: "2024-06-12",
-    status: "Verificado",
-    pontuacao: 97,
-  },
-  {
-    id: "batch_041",
-    tamanhoKg: 2500,
-    emissoesGhg: 2.9,
-    consumoAgua: 12.3,
-    conforme: true,
-    data: "2024-06-11",
-    status: "Pendente",
-    pontuacao: 88,
-  },
-];
-
-const desempenhoMensal = [
-  { mes: "Jan", ghg: 3.2, agua: 14.5, conforme: 85 },
-  { mes: "Fev", ghg: 3.0, agua: 13.8, conforme: 88 },
-  { mes: "Mar", ghg: 2.8, agua: 13.2, conforme: 90 },
-  { mes: "Abr", ghg: 2.6, agua: 12.7, conforme: 92 },
-  { mes: "Mai", ghg: 2.4, agua: 12.1, conforme: 94 },
-  { mes: "Jun", ghg: 2.3, agua: 11.8, conforme: 96 },
-];
-
-const estatisticasProdutor = {
-  producaoTotal: 125000, // kg
-  percentualConformidade: 85,
-  mediaEmissoesGhg: 2.5,
-  mediaConsumoAgua: 12.2,
-  totalLotes: 42,
-  pendentesVerificacao: 3,
-  certificadosEmitidos: 28,
-  tendenciaConformidade: "+5.2%",
-};
+import type { Batch } from "@/types/batch";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function PainelProdutor() {
+  const { getToken } = useAuth();
   const [enviando, setEnviando] = useState(false);
   const [exibirFormNovoLote, setExibirFormNovoLote] = useState(false);
   const [novoLote, setNovoLote] = useState({
@@ -112,70 +40,163 @@ export default function PainelProdutor() {
     emissoesGhg: "",
     consumoAgua: "",
   });
-  const [estatisticasProdutor, setEstatisticasProdutor] = useState({
+  const [estatisticas, setEstatisticas] = useState({
     producaoTotal: 0,
     percentualConformidade: 0,
     mediaEmissoesGhg: 0,
     mediaConsumoAgua: 0,
     totalLotes: 0,
+    lotesConformes: 0,
+    lotesNaoConformes: 0,
     pendentesVerificacao: 0,
     certificadosEmitidos: 0,
     tendenciaConformidade: "+0%",
   });
-  const [lotesProdutor, setLotesProdutor] = useState(mockLotesProdutor);
+  const [lotes, setLotes] = useState<Batch[]>([]);
+  const [desempenhoMensal, setDesempenhoMensal] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [erroApi, setErroApi] = useState<string | null>(null);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         setIsLoading(true);
-        
-        // Load stats
-        const stats = await fetchStats();
-        
-        // Load batches for this producer (assuming producer_id = "prod_001" for demo)
-        const { batches } = await fetchBatches({ producer_id: "prod_001", limit: 10 });
-        
-        // Transform batches to match the table format
-        const transformedBatches = batches.map(batch => ({
-          id: batch.id,
-          tamanhoKg: batch.size_kg,
-          emissoesGhg: batch.telemetry?.ghg_emissions || 0,
-          consumoAgua: batch.telemetry?.water_consumption_liters || 0,
-          conforme: batch.is_compliant,
-          data: batch.created_at ? new Date(batch.created_at).toISOString().split('T')[0] : new Date().toISOString().split('T')[0],
-          status: batch.is_compliant ? "Verificado" : "Atenção Necessária",
-          pontuacao: batch.is_compliant ? Math.floor(Math.random() * 20) + 80 : Math.floor(Math.random() * 40) + 40,
-        }));
-        
-        setLotesProdutor(transformedBatches);
-        
-        // Calculate producer statistics from batches
-        const totalProduction = batches.reduce((sum: number, batch: any) => sum + batch.size_kg, 0);
-        const compliantBatches = batches.filter((b: any) => b.is_compliant).length;
-        const complianceRate = batches.length > 0 ? (compliantBatches / batches.length) * 100 : 0;
-        
-        // Calculate averages from telemetry data
-        const batchesWithTelemetry = batches.filter((b: any) => b.telemetry);
-        const avgEmissions = batchesWithTelemetry.length > 0 ? 
-          batchesWithTelemetry.reduce((sum: number, batch: any) => sum + (batch.telemetry?.ghg_emissions || 0), 0) / batchesWithTelemetry.length : 0;
-        const avgWater = batchesWithTelemetry.length > 0 ? 
-          batchesWithTelemetry.reduce((sum: number, batch: any) => sum + (batch.telemetry?.water_consumption_liters || 0), 0) / batchesWithTelemetry.length : 0;
-        
-        setEstatisticasProdutor({
-          producaoTotal: totalProduction,
-          percentualConformidade: parseFloat(complianceRate.toFixed(1)),
-          mediaEmissoesGhg: parseFloat(avgEmissions.toFixed(1)),
-          mediaConsumoAgua: parseFloat(avgWater.toFixed(1)),
-          totalLotes: batches.length,
-          pendentesVerificacao: batches.filter((b: any) => !b.is_compliant).length,
-          certificadosEmitidos: Math.floor(compliantBatches * 0.8), // Estimate
-          tendenciaConformidade: "+5.2%",
+        setErroApi(null);
+
+        // Carrega todos os lotes (sem filtro de producer_id para pegar tudo)
+        const { batches } = await fetchBatches({ limit: 1000 });
+
+        if (!batches || batches.length === 0) {
+          setEstatisticas({
+            producaoTotal: 0,
+            percentualConformidade: 0,
+            mediaEmissoesGhg: 0,
+            mediaConsumoAgua: 0,
+            totalLotes: 0,
+            lotesConformes: 0,
+            lotesNaoConformes: 0,
+            pendentesVerificacao: 0,
+            certificadosEmitidos: 0,
+            tendenciaConformidade: "+0%",
+          });
+          setLotes([]);
+          setDesempenhoMensal([]);
+          setIsLoading(false);
+          return;
+        }
+
+        setLotes(batches);
+
+        // --- Cálculo das estatísticas dos cards superiores ---
+        const totalProduction = batches.reduce((sum: number, b: Batch) => sum + (b.size_kg || 0), 0);
+        const compliantBatches = batches.filter((b: Batch) => b.is_compliant).length;
+        const nonCompliantBatches = batches.length - compliantBatches;
+        const complianceRate = (compliantBatches / batches.length) * 100;
+
+        // Médias de telemetria
+        const batchesWithTelemetry = batches.filter((b: Batch) => b.telemetry);
+        const avgEmissions = batchesWithTelemetry.length > 0
+          ? batchesWithTelemetry.reduce((sum: number, b: Batch) => sum + (b.telemetry?.ghg_emissions || 0), 0) / batchesWithTelemetry.length
+          : 0;
+        const avgWater = batchesWithTelemetry.length > 0
+          ? batchesWithTelemetry.reduce((sum: number, b: Batch) => sum + (b.telemetry?.water_consumption_liters || 0), 0) / batchesWithTelemetry.length
+          : 0;
+
+        // Tendência: comparar últimos 30 dias com os 30 anteriores
+        const now = new Date();
+        const trintaDiasAtras = new Date(now.getTime() - 30 * 24 * 60 * 60 * 1000);
+        const sessentaDiasAtras = new Date(now.getTime() - 60 * 24 * 60 * 60 * 1000);
+
+        const batchesRecentes = batches.filter((b: Batch) => {
+          if (!b.created_at) return false;
+          const d = new Date(b.created_at);
+          return d >= trintaDiasAtras && d <= now;
         });
-        
-      } catch (error) {
-        console.error("Failed to load producer data:", error);
-        // Keep default mock data if API fails
+        const batchesAnteriores = batches.filter((b: Batch) => {
+          if (!b.created_at) return false;
+          const d = new Date(b.created_at);
+          return d >= sessentaDiasAtras && d < trintaDiasAtras;
+        });
+
+        const taxaRecente = batchesRecentes.length > 0
+          ? (batchesRecentes.filter((b: Batch) => b.is_compliant).length / batchesRecentes.length) * 100
+          : 0;
+        const taxaAnterior = batchesAnteriores.length > 0
+          ? (batchesAnteriores.filter((b: Batch) => b.is_compliant).length / batchesAnteriores.length) * 100
+          : 0;
+
+        let tendencia = "+0%";
+        if (taxaAnterior > 0) {
+          const diff = ((taxaRecente - taxaAnterior) / taxaAnterior) * 100;
+          tendencia = `${diff >= 0 ? "+" : ""}${diff.toFixed(1)}%`;
+        }
+
+        setEstatisticas({
+          producaoTotal: totalProduction,
+          percentualConformidade: complianceRate != null ? parseFloat(complianceRate.toFixed(1)) : 0,
+          mediaEmissoesGhg: avgEmissions != null ? parseFloat(avgEmissions.toFixed(2)) : 0,
+          mediaConsumoAgua: avgWater != null ? parseFloat(avgWater.toFixed(1)) : 0,
+          totalLotes: batches.length,
+          lotesConformes: compliantBatches,
+          lotesNaoConformes: nonCompliantBatches,
+          pendentesVerificacao: nonCompliantBatches,
+          certificadosEmitidos: compliantBatches,
+          tendenciaConformidade: tendencia,
+        });
+
+        // --- Dados para o gráfico de tendência mensal ---
+        const meses: Record<string, { ghg: number[]; agua: number[]; conforme: number[]; count: number }> = {};
+        const nomesMeses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+
+        batches.forEach((b: Batch) => {
+          if (!b.created_at) return;
+          const d = new Date(b.created_at);
+          const mesKey = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
+          const mesLabel = nomesMeses[d.getMonth()];
+
+          if (!meses[mesKey]) {
+            meses[mesKey] = { ghg: [], agua: [], conforme: [], count: 0 };
+          }
+          meses[mesKey].count++;
+          if (b.telemetry) {
+            meses[mesKey].ghg.push(b.telemetry.ghg_emissions || 0);
+            meses[mesKey].agua.push(b.telemetry.water_consumption_liters || 0);
+          }
+          meses[mesKey].conforme.push(b.is_compliant ? 100 : 0);
+        });
+
+        const dadosMensais = Object.entries(meses)
+          .sort(([a], [b]) => a.localeCompare(b))
+          .map(([key, vals]) => {
+            const mesNum = parseInt(key.split("-")[1]) - 1;
+            return {
+              mes: nomesMeses[mesNum] || key,
+              ghg: vals.ghg.length > 0 ? parseFloat((vals.ghg.reduce((a: number, b: number) => a + b, 0) / vals.ghg.length).toFixed(2)) : 0,
+              agua: vals.agua.length > 0 ? parseFloat((vals.agua.reduce((a: number, b: number) => a + b, 0) / vals.agua.length).toFixed(1)) : 0,
+              conforme: parseFloat((vals.conforme.reduce((a: number, b: number) => a + b, 0) / vals.conforme.length).toFixed(0)),
+            };
+          });
+
+        setDesempenhoMensal(dadosMensais.length > 0 ? dadosMensais : []);
+
+      } catch (error: any) {
+        console.error("Falha ao carregar dados do produtor:", error);
+        setErroApi(error.message || "Erro ao conectar com a API");
+        // Zera tudo em caso de erro
+        setEstatisticas({
+          producaoTotal: 0,
+          percentualConformidade: 0,
+          mediaEmissoesGhg: 0,
+          mediaConsumoAgua: 0,
+          totalLotes: 0,
+          lotesConformes: 0,
+          lotesNaoConformes: 0,
+          pendentesVerificacao: 0,
+          certificadosEmitidos: 0,
+          tendenciaConformidade: "+0%",
+        });
+        setLotes([]);
+        setDesempenhoMensal([]);
       } finally {
         setIsLoading(false);
       }
@@ -184,20 +205,102 @@ export default function PainelProdutor() {
     loadData();
   }, []);
 
-  const handleUploadDados = () => {
+  const handleUploadDados = async () => {
     setEnviando(true);
-    setTimeout(() => {
-      alert("Dados do lote enviados com sucesso!");
+    try {
+      const apiKey = process.env.NEXT_PUBLIC_API_KEY || "";
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        ...(apiKey ? { "X-API-Key": apiKey } : {}),
+      };
+      // Envia dados de telemetria simulados para o lote mais recente
+      const payload = {
+        sensor_id: "producer_dashboard_upload",
+        timestamp: new Date().toISOString(),
+        energy_source: "wind",
+        power_generated_mwh: 1.5,
+        ghg_emissions_kgCO2_per_kgH2: 2.8,
+        water_consumption_liters: 12.5,
+        water_source: "desalination",
+      };
+      const res = await fetch(`${apiBaseUrl}/api/v1/telemetry`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const errBody = await res.text().catch(() => "Erro desconhecido");
+        throw new Error(`Erro ${res.status}: ${errBody}`);
+      }
+      const result = await res.json();
+      alert(`✅ Dados enviados com sucesso!\nLote: ${result.batch_id?.slice(0, 12)}...\nConforme: ${result.is_compliant ? "Sim" : "Não"}`);
+      window.location.reload();
+    } catch (err) {
+      console.error("Erro ao enviar dados:", err);
+      alert(`❌ Erro ao enviar dados: ${err instanceof Error ? err.message : "Erro desconhecido"}`);
+    } finally {
       setEnviando(false);
-    }, 1500);
+    }
   };
 
-  const handleSubmitNovoLote = (e: React.FormEvent) => {
+
+  const handleSubmitNovoLote = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Novo lote submetido: ${JSON.stringify(novoLote)}`);
-    setExibirFormNovoLote(false);
-    setNovoLote({ tamanhoKg: "", emissoesGhg: "", consumoAgua: "" });
+    setEnviando(true);
+    try {
+      const apiKey = process.env.NEXT_PUBLIC_API_KEY || "";
+      const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL || "";
+      const headers: Record<string, string> = {
+        "Content-Type": "application/json",
+        ...(apiKey ? { "X-API-Key": apiKey } : {}),
+      };
+      const payload = {
+        sensor_id: "producer_dashboard",
+        timestamp: new Date().toISOString(),
+        energy_source: "wind",
+        power_generated_mwh: parseFloat(novoLote.tamanhoKg) / 100,
+        ghg_emissions_kgCO2_per_kgH2: parseFloat(novoLote.emissoesGhg),
+        water_consumption_liters: parseFloat(novoLote.consumoAgua),
+        water_source: "desalination",
+      };
+      const res = await fetch(`${apiBaseUrl}/api/v1/telemetry`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const errBody = await res.text().catch(() => "Erro desconhecido");
+        throw new Error(`Erro ${res.status}: ${errBody}`);
+      }
+      const result = await res.json();
+      alert(`✅ Lote criado com sucesso!\nID: ${result.batch_id?.slice(0, 12)}...\nConforme: ${result.is_compliant ? "Sim" : "Não"}`);
+      setExibirFormNovoLote(false);
+      setNovoLote({ tamanhoKg: "", emissoesGhg: "", consumoAgua: "" });
+      // Recarregar dados
+      window.location.reload();
+    } catch (err) {
+      console.error("Erro ao criar lote:", err);
+      alert(`❌ Erro ao criar lote: ${err instanceof Error ? err.message : "Erro desconhecido"}`);
+    } finally {
+      setEnviando(false);
+    }
   };
+
+  // Helper para headers de autenticação (JWT Bearer com fallback X-API-Key)
+  function getAuthHeaders(): Record<string, string> {
+    const headers: Record<string, string> = {};
+    const token = getToken();
+    if (token) {
+      headers["Authorization"] = `Bearer ${token}`;
+    } else {
+      const apiKey = process.env.NEXT_PUBLIC_API_KEY || "";
+      if (apiKey) {
+        headers["X-API-Key"] = apiKey;
+      }
+    }
+    return headers;
+  }
 
   // Função para baixar o PDF Oficial CBAM
   const handleGenerateReport = async () => {
@@ -205,9 +308,7 @@ export default function PainelProdutor() {
       const year = new Date().getFullYear();
       const response = await fetch(`/api/v1/reports/cbam/${year}/download?format=pdf`, {
         method: 'GET',
-        headers: {
-          "X-API-Key": "test-secret-key-for-local-development-12345"
-        }
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) throw new Error("Falha ao gerar o relatório");
@@ -233,9 +334,7 @@ export default function PainelProdutor() {
       const year = new Date().getFullYear();
       const response = await fetch(`/api/v1/reports/cbam/${year}/download?format=csv`, {
         method: 'GET',
-        headers: {
-          "X-API-Key": "test-secret-key-for-local-development-12345"
-        }
+        headers: getAuthHeaders(),
       });
 
       if (!response.ok) throw new Error("Falha ao exportar dados");
@@ -255,17 +354,59 @@ export default function PainelProdutor() {
     }
   };
 
-  const handleBaixarCertificado = (idLote: string, status: string) => {
-    if (status === "Atenção Necessária") {
+  const handleBaixarCertificado = async (idLote: string, isCompliant: boolean) => {
+    if (!isCompliant) {
       alert(`O lote ${idLote} possui não-conformidades e não pode ser certificado no padrão CBAM.`);
       return;
     }
-    alert(`Redirecionando para a prova criptográfica (SBT) do lote ${idLote} na Polygon Explorer...`);
+    try {
+      const { certifyBatch } = await import("@/lib/api");
+      const result = await certifyBatch(idLote);
+      alert(`✅ Certificado SBT emitido com sucesso!\nToken ID: ${result.token_id}\nTX: ${result.tx_hash?.slice(0, 20)}...`);
+      window.location.reload();
+    } catch (err) {
+      console.error("Erro ao emitir certificado:", err);
+      alert(`❌ Erro ao emitir certificado: ${err instanceof Error ? err.message : "Erro desconhecido"}`);
+    }
   };
+
+
+  // Loading state
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-600 mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Carregando dados de produção...</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Erro state
+  if (erroApi) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center max-w-md">
+          <AlertTriangle className="h-16 w-16 text-red-500 mx-auto mb-4" />
+          <h2 className="text-2xl font-bold mb-2">Erro de Conexão</h2>
+          <p className="text-muted-foreground mb-4">
+            Não foi possível carregar os dados do servidor. Verifique se o backend está rodando.
+          </p>
+          <p className="text-sm text-red-500 mb-4">{erroApi}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-green-600 text-white rounded-md px-6 py-2 hover:bg-green-700"
+          >
+            Tentar Novamente
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
-      <Navbar />
       <div className="container mx-auto p-6 space-y-6">
       {/* Cabeçalho */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
@@ -296,66 +437,66 @@ export default function PainelProdutor() {
 
       {/* Modal Novo Lote */}
       {exibirFormNovoLote && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold text-gray-900 dark:text-gray-100">Registrar Novo Lote</h2>
+        <div className="fixed inset-0 flex items-center justify-center z-50" style={{backgroundColor: 'rgba(0,0,0,0.5)'}}>
+          <div style={{backgroundColor: '#ffffff', border: '1px solid #e5e7eb', borderRadius: '8px', padding: '24px', maxWidth: '448px', width: '100%', margin: '0 16px', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)'}}>
+            <div style={{display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px'}}>
+              <h2 style={{fontSize: '20px', fontWeight: '700', color: '#111827', margin: 0}}>Registrar Novo Lote</h2>
               <button
                 onClick={() => setExibirFormNovoLote(false)}
-                className="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300"
+                style={{color: '#6b7280', background: 'none', border: 'none', cursor: 'pointer', fontSize: '18px'}}
               >
                 ✕
               </button>
             </div>
-            <form onSubmit={handleSubmitNovoLote} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium mb-1">Tamanho do Lote (kg)</label>
+            <form onSubmit={handleSubmitNovoLote}>
+              <div style={{marginBottom: '16px'}}>
+                <label style={{display: 'block', fontSize: '14px', fontWeight: '500', color: '#374151', marginBottom: '4px'}}>Tamanho do Lote (kg)</label>
                 <input
                   type="number"
                   required
-                  className="w-full border rounded-md px-3 py-2"
+                  style={{width: '100%', border: '1px solid #d1d5db', borderRadius: '6px', padding: '8px 12px', backgroundColor: '#ffffff', color: '#000000', fontSize: '16px'}}
                   value={novoLote.tamanhoKg}
                   onChange={(e) => setNovoLote({ ...novoLote, tamanhoKg: e.target.value })}
                   placeholder="Ex: 1500"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Emissões GHG (kgCO₂e/kgH₂)</label>
+              <div style={{marginBottom: '16px'}}>
+                <label style={{display: 'block', fontSize: '14px', fontWeight: '500', color: '#374151', marginBottom: '4px'}}>Emissões GHG (kgCO₂e/kgH₂)</label>
                 <input
                   type="number"
                   step="0.1"
                   required
-                  className="w-full border rounded-md px-3 py-2"
+                  style={{width: '100%', border: '1px solid #d1d5db', borderRadius: '6px', padding: '8px 12px', backgroundColor: '#ffffff', color: '#000000', fontSize: '16px'}}
                   value={novoLote.emissoesGhg}
                   onChange={(e) => setNovoLote({ ...novoLote, emissoesGhg: e.target.value })}
                   placeholder="Ex: 2.8"
                 />
-                <p className="text-xs text-gray-500 mt-1">Limite CBAM: 3.4 kgCO₂e/kgH₂</p>
+                <p style={{fontSize: '12px', color: '#6b7280', marginTop: '4px', margin: '4px 0 0 0'}}>Limite CBAM: 3.4 kgCO₂e/kgH₂</p>
               </div>
-              <div>
-                <label className="block text-sm font-medium mb-1">Consumo de Água (L/kgH₂)</label>
+              <div style={{marginBottom: '16px'}}>
+                <label style={{display: 'block', fontSize: '14px', fontWeight: '500', color: '#374151', marginBottom: '4px'}}>Consumo de Água (L/kgH₂)</label>
                 <input
                   type="number"
                   step="0.1"
                   required
-                  className="w-full border rounded-md px-3 py-2"
+                  style={{width: '100%', border: '1px solid #d1d5db', borderRadius: '6px', padding: '8px 12px', backgroundColor: '#ffffff', color: '#000000', fontSize: '16px'}}
                   value={novoLote.consumoAgua}
                   onChange={(e) => setNovoLote({ ...novoLote, consumoAgua: e.target.value })}
                   placeholder="Ex: 12.5"
                 />
-                <p className="text-xs text-gray-500 mt-1">Limite recomendado: 15 L/kgH₂</p>
+                <p style={{fontSize: '12px', color: '#6b7280', marginTop: '4px', margin: '4px 0 0 0'}}>Limite recomendado: 15 L/kgH₂</p>
               </div>
-              <div className="flex justify-end gap-2 pt-4">
+              <div style={{display: 'flex', justifyContent: 'flex-end', gap: '8px', paddingTop: '16px'}}>
                 <button
                   type="button"
                   onClick={() => setExibirFormNovoLote(false)}
-                  className="border rounded-md px-4 py-2 text-sm hover:bg-gray-100 dark:hover:bg-gray-800"
+                  style={{border: '1px solid #d1d5db', borderRadius: '6px', padding: '8px 16px', color: '#374151', backgroundColor: '#ffffff', cursor: 'pointer', fontSize: '14px'}}
                 >
                   Cancelar
                 </button>
                 <button
                   type="submit"
-                  className="bg-blue-600 text-white rounded-md px-4 py-2 text-sm hover:bg-blue-700"
+                  style={{backgroundColor: '#2563eb', color: '#ffffff', borderRadius: '6px', padding: '8px 16px', border: 'none', cursor: 'pointer', fontSize: '14px'}}
                 >
                   Registrar Lote
                 </button>
@@ -365,7 +506,7 @@ export default function PainelProdutor() {
         </div>
       )}
 
-      {/* Métricas principais */}
+      {/* Métricas principais - AGORA USANDO DADOS REAIS DA API */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <div className="border rounded-lg p-6">
           <div className="flex flex-row items-center justify-between space-y-0 pb-2">
@@ -373,7 +514,7 @@ export default function PainelProdutor() {
             <Factory className="h-4 w-4 text-gray-400" />
           </div>
           <div className="pt-2">
-            <div className="text-2xl font-bold">{estatisticasProdutor.producaoTotal.toLocaleString('pt-BR')} kg</div>
+            <div className="text-2xl font-bold">{estatisticas.producaoTotal.toLocaleString('pt-BR')} kg</div>
             <div className="flex items-center text-sm text-gray-500 mt-1">
               <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
               <span>Hidrogênio verde produzido</span>
@@ -387,10 +528,10 @@ export default function PainelProdutor() {
             <CheckCircle className="h-4 w-4 text-gray-400" />
           </div>
           <div className="pt-2">
-            <div className="text-2xl font-bold">{estatisticasProdutor.percentualConformidade}%</div>
+            <div className="text-2xl font-bold">{estatisticas.percentualConformidade}%</div>
             <div className="flex items-center text-sm text-gray-500 mt-1">
               <TrendingUp className="h-4 w-4 text-green-500 mr-1" />
-              <span>{estatisticasProdutor.tendenciaConformidade} de melhoria</span>
+              <span>{estatisticas.tendenciaConformidade} de melhoria</span>
             </div>
           </div>
         </div>
@@ -401,7 +542,7 @@ export default function PainelProdutor() {
             <Cloud className="h-4 w-4 text-gray-400" />
           </div>
           <div className="pt-2">
-            <div className="text-2xl font-bold">{estatisticasProdutor.mediaEmissoesGhg} kgCO₂e/kgH₂</div>
+            <div className="text-2xl font-bold">{estatisticas.mediaEmissoesGhg} kgCO₂e/kgH₂</div>
             <div className="flex items-center text-sm text-gray-500 mt-1">
               <TrendingDown className="h-4 w-4 text-green-500 mr-1" />
               <span>Abaixo do limite CBAM</span>
@@ -415,7 +556,7 @@ export default function PainelProdutor() {
             <FileText className="h-4 w-4 text-gray-400" />
           </div>
           <div className="pt-2">
-            <div className="text-2xl font-bold">{estatisticasProdutor.certificadosEmitidos}</div>
+            <div className="text-2xl font-bold">{estatisticas.certificadosEmitidos}</div>
             <div className="flex items-center text-sm text-gray-500 mt-1">
               <span>Tokens Soulbound emitidos</span>
             </div>
@@ -431,40 +572,46 @@ export default function PainelProdutor() {
             <p className="text-gray-500">Evolução das emissões GHG e consumo de água</p>
           </div>
           <div className="h-80">
-            <ResponsiveContainer width="100%" height="100%">
-              <LineChart data={desempenhoMensal}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="mes" />
-                <YAxis yAxisId="left" />
-                <YAxis yAxisId="right" orientation="right" />
-                <Tooltip />
-                <Legend />
-                <Line
-                  yAxisId="left"
-                  type="monotone"
-                  dataKey="ghg"
-                  name="Emissões GHG (kgCO₂e/kgH₂)"
-                  stroke="#3b82f6"
-                  strokeWidth={2}
-                />
-                <Line
-                  yAxisId="left"
-                  type="monotone"
-                  dataKey="agua"
-                  name="Consumo Água (L/kgH₂)"
-                  stroke="#06b6d4"
-                  strokeWidth={2}
-                />
-                <Line
-                  yAxisId="right"
-                  type="monotone"
-                  dataKey="conforme"
-                  name="Taxa de Conformidade (%)"
-                  stroke="#10b981"
-                  strokeWidth={2}
-                />
-              </LineChart>
-            </ResponsiveContainer>
+            {desempenhoMensal.length > 0 ? (
+              <ResponsiveContainer width="100%" height="100%">
+                <LineChart data={desempenhoMensal}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="mes" />
+                  <YAxis yAxisId="left" />
+                  <YAxis yAxisId="right" orientation="right" />
+                  <Tooltip />
+                  <Legend />
+                  <Line
+                    yAxisId="left"
+                    type="monotone"
+                    dataKey="ghg"
+                    name="Emissões GHG (kgCO₂e/kgH₂)"
+                    stroke="#3b82f6"
+                    strokeWidth={2}
+                  />
+                  <Line
+                    yAxisId="left"
+                    type="monotone"
+                    dataKey="agua"
+                    name="Consumo Água (L/kgH₂)"
+                    stroke="#06b6d4"
+                    strokeWidth={2}
+                  />
+                  <Line
+                    yAxisId="right"
+                    type="monotone"
+                    dataKey="conforme"
+                    name="Taxa de Conformidade (%)"
+                    stroke="#10b981"
+                    strokeWidth={2}
+                  />
+                </LineChart>
+              </ResponsiveContainer>
+            ) : (
+              <div className="flex items-center justify-center h-full text-gray-400">
+                <p>Sem dados mensais disponíveis</p>
+              </div>
+            )}
           </div>
         </div>
 
@@ -479,28 +626,28 @@ export default function PainelProdutor() {
                 <div className="w-3 h-3 rounded-full bg-green-500"></div>
                 <span>Verificados & Conformes</span>
               </div>
-              <span className="font-semibold">32 lotes</span>
+              <span className="font-semibold">{estatisticas.lotesConformes} lotes</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
                 <span>Verificação Pendente</span>
               </div>
-              <span className="font-semibold">{estatisticasProdutor.pendentesVerificacao} lotes</span>
+              <span className="font-semibold">{estatisticas.pendentesVerificacao} lotes</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-red-500"></div>
                 <span>Necessitam Atenção</span>
               </div>
-              <span className="font-semibold">3 lotes</span>
+              <span className="font-semibold">{estatisticas.lotesNaoConformes} lotes</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-3 h-3 rounded-full bg-blue-500"></div>
                 <span>Certificados Emitidos</span>
               </div>
-              <span className="font-semibold">{estatisticasProdutor.certificadosEmitidos} SBTs</span>
+              <span className="font-semibold">{estatisticas.certificadosEmitidos} SBTs</span>
             </div>
           </div>
 
@@ -528,7 +675,7 @@ export default function PainelProdutor() {
             <p className="text-gray-500">Seus últimos lotes de hidrogênio verde</p>
           </div>
           <button className="border rounded-md px-3 py-1 text-sm">
-            Ver Todos ({estatisticasProdutor.totalLotes})
+            Ver Todos ({estatisticas.totalLotes})
           </button>
         </div>
 
@@ -541,79 +688,83 @@ export default function PainelProdutor() {
                 <th className="text-left py-3 px-4 font-medium">Emissões GHG</th>
                 <th className="text-left py-3 px-4 font-medium">Água</th>
                 <th className="text-left py-3 px-4 font-medium">Status</th>
-                <th className="text-left py-3 px-4 font-medium">Pontuação</th>
+                <th className="text-left py-3 px-4 font-medium">Conforme</th>
                 <th className="text-left py-3 px-4 font-medium">Ações</th>
               </tr>
             </thead>
             <tbody>
-              {lotesProdutor.map((lote: any) => (
-                <tr key={lote.id} className="border-b hover:bg-gray-100 dark:hover:bg-gray-800">
-                  <td className="py-3 px-4">
-                    <div className="font-medium">{lote.id}</div>
-                    <div className="text-sm text-gray-500">{lote.data}</div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="font-semibold">{lote.tamanhoKg.toLocaleString('pt-BR')} kg</div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="font-semibold">{lote.emissoesGhg} kgCO₂e/kgH₂</div>
-                    <div className={`text-xs ${lote.emissoesGhg <= 3.4 ? "text-green-600" : "text-red-600"}`}>
-                      {lote.emissoesGhg <= 3.4 ? "✓ Dentro do limite" : "✗ Acima do limite"}
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="font-semibold">{lote.consumoAgua} L/kgH₂</div>
-                    <div className={`text-xs ${lote.consumoAgua <= 15 ? "text-blue-600" : "text-orange-600"}`}>
-                      {lote.consumoAgua <= 15 ? "✓ Dentro do limite" : "✗ Acima do limite"}
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <span
-                      className={`px-2 py-1 rounded-full text-xs ${
-                        lote.status === "Verificado"
-                          ? "bg-green-100 text-green-800"
-                          : lote.status === "Pendente"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {lote.status}
-                    </span>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="font-semibold">{lote.pontuacao}/100</div>
-                    <div className="w-16 h-2 bg-gray-200 rounded-full overflow-hidden mt-1">
-                      <div
-                        className={`h-full ${
-                          lote.pontuacao >= 80
-                            ? "bg-green-500"
-                            : lote.pontuacao >= 60
-                            ? "bg-yellow-500"
-                            : "bg-red-500"
-                        }`}
-                        style={{ width: `${lote.pontuacao}%` }}
-                      />
-                    </div>
-                  </td>
-                  <td className="py-3 px-4">
-                    <div className="flex gap-2">
-                      <button
-                        onClick={() => handleBaixarCertificado(lote.id, lote.status)}
-                        className="text-blue-600 hover:text-blue-800 text-sm"
-                      >
-                        <Download className="h-4 w-4 inline mr-1" />
-                        Cert
-                      </button>
-                      {lote.status === "Atenção Necessária" && (
-                        <button className="text-red-600 hover:text-red-800 text-sm">
-                          <AlertTriangle className="h-4 w-4 inline mr-1" />
-                          Corrigir
-                        </button>
-                      )}
-                    </div>
+              {lotes.length === 0 ? (
+                <tr>
+                  <td colSpan={7} className="py-8 text-center text-gray-400">
+                    Nenhum lote encontrado
                   </td>
                 </tr>
-              ))}
+              ) : (
+                lotes.slice(0, 10).map((lote: Batch) => {
+                  const dataFormatada = lote.created_at
+                    ? new Date(lote.created_at).toLocaleDateString('pt-BR')
+                    : "-";
+                  const statusLabel = lote.is_compliant ? "Verificado" : "Atenção Necessária";
+                  const statusColor = lote.is_compliant
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800";
+                  const ghgValue = lote.telemetry?.ghg_emissions || 0;
+                  const aguaValue = lote.telemetry?.water_consumption_liters || 0;
+
+                  return (
+                    <tr key={lote.id} className="border-b hover:bg-gray-100 dark:hover:bg-gray-800">
+                      <td className="py-3 px-4">
+                        <div className="font-medium">{lote.id}</div>
+                        <div className="text-sm text-gray-500">{dataFormatada}</div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="font-semibold">{(lote.size_kg || 0).toLocaleString('pt-BR')} kg</div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="font-semibold">{ghgValue} kgCO₂e/kgH₂</div>
+                        <div className={`text-xs ${ghgValue <= 3.4 ? "text-green-600" : "text-red-600"}`}>
+                          {ghgValue <= 3.4 ? "✓ Dentro do limite" : "✗ Acima do limite"}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="font-semibold">{aguaValue} L/kgH₂</div>
+                        <div className={`text-xs ${aguaValue <= 15 ? "text-blue-600" : "text-orange-600"}`}>
+                          {aguaValue <= 15 ? "✓ Dentro do limite" : "✗ Acima do limite"}
+                        </div>
+                      </td>
+                      <td className="py-3 px-4">
+                        <span className={`px-2 py-1 rounded-full text-xs ${statusColor}`}>
+                          {statusLabel}
+                        </span>
+                      </td>
+                      <td className="py-3 px-4">
+                        {lote.is_compliant ? (
+                          <CheckCircle className="h-5 w-5 text-green-500" />
+                        ) : (
+                          <XCircle className="h-5 w-5 text-red-500" />
+                        )}
+                      </td>
+                      <td className="py-3 px-4">
+                        <div className="flex gap-2">
+                          <button
+                            onClick={() => handleBaixarCertificado(lote.id, lote.is_compliant)}
+                            className="text-blue-600 hover:text-blue-800 text-sm"
+                          >
+                            <Download className="h-4 w-4 inline mr-1" />
+                            Cert
+                          </button>
+                          {!lote.is_compliant && (
+                            <button className="text-red-600 hover:text-red-800 text-sm">
+                              <AlertTriangle className="h-4 w-4 inline mr-1" />
+                              Corrigir
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  );
+                })
+              )}
             </tbody>
           </table>
         </div>

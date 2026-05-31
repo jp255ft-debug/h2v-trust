@@ -2,11 +2,11 @@ import logging
 import uuid
 import traceback
 from datetime import datetime
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
-from api.dependencies.auth import verify_api_key
 from api.dependencies.db import get_db
+from api.dependencies.tenant import get_tenant_id, require_tenant_id
 from blockchain.minting import mint_certificate_on_chain
 from core.compliance import CBAMComplianceChecker
 from db.models import Batch as BatchORM
@@ -45,11 +45,74 @@ def _create_audit_log(
         logger.error(f"Failed to create audit log: {audit_err}")
 
 
+@router.get("/{sensor_id}")
+async def get_telemetry_by_sensor(
+    sensor_id: str,
+    limit: int = Query(50, ge=1, le=1000),
+    skip: int = Query(0, ge=0),
+    db: Session = Depends(get_db),
+    tenant_id: str = Depends(get_tenant_id),
+):
+    """
+    Retorna o histórico de telemetria de um sensor específico.
+    Auditores podem ver telemetria de qualquer sensor (cross-tenant).
+    Produtores veem apenas sensores do seu tenant.
+
+    Args:
+        sensor_id: ID do sensor IoT
+        limit: Número máximo de registros (1-1000)
+        skip: Número de registros para pular (paginação)
+
+    Returns:
+        Lista de registros de telemetria ordenados por timestamp (decrescente)
+    """
+    logger.info(f"Fetching telemetry history for sensor: {sensor_id} (limit={limit}, skip={skip})")
+
+    records = (
+        db.query(TelemetryRecord)
+        .filter(TelemetryRecord.sensor_id == sensor_id)
+        .order_by(TelemetryRecord.timestamp.desc())
+        .offset(skip)
+        .limit(limit)
+        .all()
+    )
+
+    if not records:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Nenhum registro de telemetria encontrado para o sensor {sensor_id}"
+        )
+
+    _create_audit_log(
+        db, "telemetry.queried", "telemetry", sensor_id, tenant_id or "auditor",
+        {"records_found": len(records), "limit": limit, "skip": skip}
+    )
+
+    return {
+        "sensor_id": sensor_id,
+        "total": len(records),
+        "telemetry": [
+            {
+                "id": r.id,
+                "sensor_id": r.sensor_id,
+                "timestamp": r.timestamp.isoformat(),
+                "energy_source": r.energy_source,
+                "power_generated_mwh": r.power_generated_mwh,
+                "ghg_emissions_kgco2_per_kgh2": r.ghg_emissions,
+                "water_consumption_liters": r.water_consumption_liters,
+                "water_source": r.water_source,
+                "created_at": r.created_at.isoformat(),
+            }
+            for r in records
+        ],
+    }
+
+
 @router.post("", status_code=status.HTTP_201_CREATED)
 async def ingest_telemetry(
     data: TelemetryData,
     db: Session = Depends(get_db),
-    api_key: str = Depends(verify_api_key),
+    tenant_id: str = Depends(require_tenant_id),
 ):
     """
     Recebe dados de telemetria de um sensor (IoT).
@@ -80,7 +143,7 @@ async def ingest_telemetry(
         # PASSO A: Validação já feita pelo Pydantic (TelemetryData)
         # ============================================================
         _create_audit_log(
-            db, "telemetry.received", "telemetry", batch_id, api_key,
+            db, "telemetry.received", "telemetry", batch_id, tenant_id,
             {"sensor_id": data.sensor_id, "timestamp": data.timestamp.isoformat()}
         )
 
@@ -92,7 +155,7 @@ async def ingest_telemetry(
         logger.info(f"Compliance check result: {compliance_result['is_compliant']}")
 
         _create_audit_log(
-            db, "compliance.check", "batch", batch_id, api_key,
+            db, "compliance.check", "batch", batch_id, tenant_id,
             {
                 "is_compliant": compliance_result["is_compliant"],
                 "violations": compliance_result.get("violations", []),
@@ -142,7 +205,7 @@ async def ingest_telemetry(
             # Mint na blockchain - AGUARDA confirmação e extrai token_id
             logger.info(f"Minting certificate on-chain for batch {batch_id}...")
             _create_audit_log(
-                db, "blockchain.mint.attempt", "batch", batch_id, api_key,
+                db, "blockchain.mint.attempt", "batch", batch_id, tenant_id,
                 {"batch_hash": batch_hash, "producer": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"}
             )
 
@@ -154,7 +217,7 @@ async def ingest_telemetry(
                 )
                 logger.info(f"Blockchain mint confirmed: token_id={token_id}, tx_hash={tx_hash}")
                 _create_audit_log(
-                    db, "blockchain.mint.success", "certificate", str(token_id), api_key,
+                    db, "blockchain.mint.success", "certificate", str(token_id), tenant_id,
                     {"batch_id": batch_id, "tx_hash": tx_hash, "token_id": token_id}
                 )
             except Exception as bc_err:
@@ -162,7 +225,7 @@ async def ingest_telemetry(
                 logger.error(f"Blockchain mint FAILED for batch {batch_id}: {blockchain_error}")
                 logger.error(traceback.format_exc())
                 _create_audit_log(
-                    db, "blockchain.mint.failed", "batch", batch_id, api_key,
+                    db, "blockchain.mint.failed", "batch", batch_id, tenant_id,
                     {
                         "error": blockchain_error,
                         "batch_hash": batch_hash,
@@ -197,11 +260,17 @@ async def ingest_telemetry(
         db.add(telemetry_record)
         db.flush()
 
+        # Extrair producer_wallet do payload (se enviado) ou usar default
+        producer_wallet = getattr(data, 'producer_wallet', None)
+        if not producer_wallet:
+            producer_wallet = "0x70997970C51812dc3A010C7d01b50e0d17dc79C8"
+
         # Criar lote com blockchain_status
         batch = BatchORM(
             id=batch_id,
             telemetry_id=telemetry_record.id,
             size_kg=batch_size_kg,
+            producer_wallet=producer_wallet,
             is_compliant=compliance_result["is_compliant"],
             blockchain_status=blockchain_status,
             compliance_report=compliance_result,
@@ -231,7 +300,7 @@ async def ingest_telemetry(
         status_msg = f"Batch {batch.id} saved (compliant={compliance_result['is_compliant']}, blockchain={blockchain_status})"
         logger.info(status_msg)
         _create_audit_log(
-            db, "batch.created", "batch", batch.id, api_key,
+            db, "batch.created", "batch", batch.id, tenant_id,
             {
                 "blockchain_status": blockchain_status,
                 "is_compliant": compliance_result["is_compliant"],
@@ -255,7 +324,7 @@ async def ingest_telemetry(
         logger.error(f"Error in ingest_telemetry: {e}", exc_info=True)
         logger.error(traceback.format_exc())
         _create_audit_log(
-            db, "telemetry.error", "telemetry", batch_id, api_key,
+            db, "telemetry.error", "telemetry", batch_id, tenant_id,
             {"error": str(e), "traceback": traceback.format_exc()}
         )
         raise

@@ -2,8 +2,8 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
-from api.dependencies.auth import verify_api_key
 from api.dependencies.db import get_db
+from api.dependencies.tenant import get_tenant_id
 from core.compliance import CBAMComplianceChecker
 from services.batch_service import BatchService
 
@@ -15,10 +15,15 @@ router = APIRouter(prefix="/compliance", tags=["compliance"])
 async def check_batch_compliance(
     batch_id: str,
     db: Session = Depends(get_db),
-    api_key: str = Depends(verify_api_key),
+    tenant_id: str = Depends(get_tenant_id),
 ):
+    """
+    Reavalia compliance de um lote específico.
+    Produtores: só podem verificar seus próprios lotes.
+    Auditores: podem verificar qualquer lote (cross-tenant).
+    """
     service = BatchService(db)
-    batch = service.get_batch_by_id(batch_id)
+    batch = service.get_batch_by_id(batch_id, tenant_id=tenant_id)
     if not batch:
         raise HTTPException(status_code=404, detail="Batch not found")
     
@@ -61,6 +66,7 @@ async def validate_against_cbam(
     energy_source: str,
     water_source: str,
     water_liters_per_kg: float,
+    tenant_id: str = Depends(get_tenant_id),
 ):
     """Endpoint simples para testar conformidade sem criar lote."""
     from models.telemetry import TelemetryData

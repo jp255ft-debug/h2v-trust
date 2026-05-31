@@ -1,12 +1,11 @@
 """
-Database configuration with TimescaleDB support.
-Supports both SQLite (development/testing) and PostgreSQL/TimescaleDB (production).
+Database configuration with TimescaleDB/PostgreSQL support.
 
 The initialization is resilient: if the database is not available (e.g., TimescaleDB
 container not running), it logs a warning and continues without crashing.
 """
 
-from sqlalchemy import create_engine, event
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from config import settings
@@ -17,36 +16,23 @@ logger = logging.getLogger(__name__)
 # Determine if we're using PostgreSQL/TimescaleDB
 _is_timescaledb = "postgresql" in settings.DATABASE_URL or "postgres" in settings.DATABASE_URL
 
-# Create database engine with appropriate configuration
-if _is_timescaledb:
-    # PostgreSQL/TimescaleDB: use connection pooling for high concurrency
-    engine = create_engine(
-        settings.DATABASE_URL,
-        pool_size=20,
-        max_overflow=10,
-        pool_pre_ping=True,
-        pool_recycle=3600,
-        echo=False,
+# Create database engine with TimescaleDB/PostgreSQL configuration
+if not _is_timescaledb:
+    logger.warning(
+        "DATABASE_URL does not point to PostgreSQL/TimescaleDB. "
+        "Expected format: postgresql://user:password@host:5432/dbname"
     )
-    logger.info(f"Configured TimescaleDB/PostgreSQL engine: {settings.DATABASE_URL}")
-else:
-    # SQLite: single connection, WAL mode for better concurrency
-    engine = create_engine(
-        settings.DATABASE_URL,
-        connect_args={"check_same_thread": False},
-        echo=False,
-    )
-    
-    # Enable WAL mode for SQLite to improve concurrent reads
-    @event.listens_for(engine, "connect")
-    def set_sqlite_pragma(dbapi_connection, connection_record):
-        cursor = dbapi_connection.cursor()
-        cursor.execute("PRAGMA journal_mode=WAL")
-        cursor.execute("PRAGMA synchronous=NORMAL")
-        cursor.execute("PRAGMA cache_size=-64000")  # 64MB cache
-        cursor.close()
-    
-    logger.info(f"Using SQLite engine: {settings.DATABASE_URL}")
+
+# PostgreSQL/TimescaleDB: use connection pooling for high concurrency
+engine = create_engine(
+    settings.DATABASE_URL,
+    pool_size=20,
+    max_overflow=10,
+    pool_pre_ping=True,
+    pool_recycle=3600,
+    echo=False,
+)
+logger.info(f"Configured database engine: {settings.DATABASE_URL}")
 
 # Create session factory
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

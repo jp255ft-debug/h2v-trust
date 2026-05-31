@@ -2,13 +2,17 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, CheckCircle, Cloud, FileText } from "lucide-react";
-import { fetchStats, fetchCertificate } from "@/lib/api";
+import { Search, CheckCircle, Cloud, FileText, AlertCircle } from "lucide-react";
+import { fetchStats, fetchBatch } from "@/lib/api";
+import type { Batch } from "@/types/batch";
+import SystemStatus from "@/components/shared/SystemStatus";
+
 
 export default function AuditorPage() {
   const [search, setSearch] = useState("");
-  const [searchResult, setSearchResult] = useState<any>(null);
+  const [searchResult, setSearchResult] = useState<Batch | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [stats, setStats] = useState({
     totalCertificates: 0,
     complianceRate: 0,
@@ -42,49 +46,33 @@ export default function AuditorPage() {
     loadStats();
   }, []);
 
-  const handleSearch = () => {
+  const handleSearch = async () => {
+    const query = search.trim();
+    if (!query) return;
+
     setIsLoading(true);
-    // Simular chamada à API
-    setTimeout(() => {
-      setSearchResult({
-        id: "cert_001",
-        batchId: "batch_045",
-        producer: "Produtor A",
-        ghgEmissions: 2.3,
-        waterConsumption: 11.8,
-        isCompliant: true,
-        verifiedAt: "2024-06-15",
-      });
+    setError(null);
+    setSearchResult(null);
+
+    try {
+      const data = await fetchBatch(query);
+      setSearchResult(data);
+    } catch (err: any) {
+      if (err?.status === 404) {
+        setError("Lote não encontrado. Verifique o ID informado.");
+      } else {
+        setError("Erro ao buscar lote. Verifique a conexão com o servidor.");
+      }
+      setSearchResult(null);
+    } finally {
       setIsLoading(false);
-    }, 1000);
+    }
   };
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Menu de navegação */}
-      <nav className="border-b bg-card">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center gap-6">
-            <Link href="/" className="text-xl font-bold text-foreground hover:text-primary transition">
-              H2V-Trust
-            </Link>
-            <div className="flex gap-4">
-              <Link href="/dashboard" className="text-sm font-medium text-foreground hover:text-primary transition">
-                Dashboard
-              </Link>
-              <Link href="/auditor" className="text-sm font-medium text-primary transition">
-                Auditor
-              </Link>
-              <Link href="/producer" className="text-sm font-medium text-foreground hover:text-primary transition">
-                Produtor
-              </Link>
-            </div>
-          </div>
-        </div>
-      </nav>
-
-      {/* Conteúdo principal */}
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+
         {/* Cabeçalho */}
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">Auditor H2V-Trust</h1>
@@ -114,32 +102,65 @@ export default function AuditorPage() {
             </button>
           </div>
 
+          {/* Estado de erro */}
+          {error && (
+            <div className="mt-6 p-4 border rounded-lg bg-red-50 dark:bg-red-950/20 border-red-200 dark:border-red-800 flex items-start gap-3">
+              <AlertCircle className="h-5 w-5 text-red-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-medium text-red-700 dark:text-red-400">Erro na pesquisa</p>
+                <p className="text-sm text-red-600 dark:text-red-500">{error}</p>
+              </div>
+            </div>
+          )}
+
           {/* Resultado da pesquisa */}
           {searchResult && (
             <div className="mt-6 p-4 border rounded-lg bg-muted/20">
               <div className="flex justify-between items-start">
                 <div>
-                  <h3 className="font-semibold text-foreground">Certificado {searchResult.id}</h3>
-                  <p className="text-sm text-muted-foreground">Lote: {searchResult.batchId}</p>
-                  <p className="text-sm text-muted-foreground">Produtor: {searchResult.producer}</p>
+                  <h3 className="font-semibold text-foreground">Lote {searchResult.id?.slice(0, 8)}...</h3>
+                  <p className="text-sm text-muted-foreground">Facility: {searchResult.facility_id || "N/A"}</p>
+                  <p className="text-sm text-muted-foreground">Localização: {searchResult.production_location || "N/A"}</p>
+                  <p className="text-sm text-muted-foreground">Produtor: {searchResult.producer_id?.slice(0, 8)}...</p>
                 </div>
-                <span className={`px-2 py-1 rounded-full text-xs font-medium ${searchResult.isCompliant ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"}`}>
-                  {searchResult.isCompliant ? "Conforme" : "Não conforme"}
-                </span>
+                <div className="flex flex-col items-end gap-2">
+                  <span className={`px-2 py-1 rounded-full text-xs font-medium ${searchResult.is_compliant ? "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400" : "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400"}`}>
+                    {searchResult.is_compliant ? "Conforme" : "Não conforme"}
+                  </span>
+                  {searchResult.compliance_report?.score && (
+                    <span className="text-xs text-muted-foreground">
+                      Score: {searchResult.compliance_report.score}/100
+                    </span>
+                  )}
+                </div>
               </div>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
                 <div>
                   <p className="text-xs text-muted-foreground">Emissões GHG</p>
-                  <p className="font-semibold text-foreground">{searchResult.ghgEmissions} kgCO₂e/kgH₂</p>
+                  <p className="font-semibold text-foreground">{searchResult.compliance_report?.ghg_emissions ?? "—"} kgCO₂e/kgH₂</p>
+                  <p className="text-xs text-muted-foreground">Limite: {searchResult.compliance_report?.ghg_limit ?? 3.4} kgCO₂e/kgH₂</p>
                 </div>
                 <div>
                   <p className="text-xs text-muted-foreground">Consumo de Água</p>
-                  <p className="font-semibold text-foreground">{searchResult.waterConsumption} L/kgH₂</p>
+                  <p className="font-semibold text-foreground">{searchResult.compliance_report?.water_consumption ?? "—"} L/kgH₂</p>
+                  <p className="text-xs text-muted-foreground">Limite: {searchResult.compliance_report?.water_limit ?? 15} L/kgH₂</p>
                 </div>
                 <div>
-                  <p className="text-xs text-muted-foreground">Verificado em</p>
-                  <p className="font-semibold text-foreground">{searchResult.verifiedAt}</p>
+                  <p className="text-xs text-muted-foreground">Fonte de Energia</p>
+                  <p className="font-semibold text-foreground capitalize">{searchResult.compliance_report?.energy_source || searchResult.telemetry?.energy_source || "—"}</p>
                 </div>
+                <div>
+                  <p className="text-xs text-muted-foreground">Tamanho do Lote</p>
+                  <p className="font-semibold text-foreground">{searchResult.size_kg?.toFixed(1) ?? "—"} kg</p>
+                </div>
+              </div>
+              <div className="mt-4 pt-3 border-t border-border">
+                <Link
+                  href={`/auditor/verify/${searchResult.id}`}
+                  className="text-sm text-primary hover:text-primary/80 font-medium"
+                >
+                  Ver detalhes completos →
+                </Link>
               </div>
             </div>
           )}
@@ -175,43 +196,9 @@ export default function AuditorPage() {
           </div>
         </div>
 
-        {/* Status do Sistema */}
-        <div className="bg-card rounded-lg border shadow-sm">
-          <div className="p-6">
-            <h2 className="text-xl font-semibold text-foreground">Status do Sistema</h2>
-          </div>
-          <div className="p-6 pt-0 space-y-4">
-            <div className="flex items-center justify-between p-4 rounded-lg border bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800">
-              <div>
-                <p className="font-medium text-green-700 dark:text-green-400">✅ Módulo de Auditoria</p>
-                <p className="text-sm text-green-600 dark:text-green-500">Operacional</p>
-              </div>
-              <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">
-                Ativo
-              </span>
-            </div>
+        {/* Status do Sistema - AGORA COM HEALTH CHECK REAL */}
+        <SystemStatus />
 
-            <div className="flex items-center justify-between p-4 rounded-lg border bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
-              <div>
-                <p className="font-medium text-blue-700 dark:text-blue-400">🔗 Conexão Blockchain</p>
-                <p className="text-sm text-blue-600 dark:text-blue-500">Configurada</p>
-              </div>
-              <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">
-                Conectada
-              </span>
-            </div>
-
-            <div className="flex items-center justify-between p-4 rounded-lg border bg-purple-50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800">
-              <div>
-                <p className="font-medium text-purple-700 dark:text-purple-400">📊 Banco de Dados</p>
-                <p className="text-sm text-purple-600 dark:text-purple-500">Sincronizado</p>
-              </div>
-              <span className="px-3 py-1 rounded-full text-sm font-medium bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200">
-                Online
-              </span>
-            </div>
-          </div>
-        </div>
       </div>
     </div>
   );

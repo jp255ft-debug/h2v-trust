@@ -9,9 +9,8 @@ import os
 CONFIG_PATH = Path(__file__).parent / "config.yaml"
 # Configurable API URL via environment variable
 API_URL = os.getenv("API_BASE_URL", "http://localhost:8000") + "/api/v1/telemetry"
-# Usar a mesma chave que o backend espera por padrão
 # Em produção, definir H2V_API_KEY no ambiente
-API_KEY = os.getenv("H2V_API_KEY", "test-secret-key-for-local-development-12345")
+API_KEY = os.getenv("H2V_API_KEY", "")
 
 async def send_telemetry(sensor_config):
     async with httpx.AsyncClient() as client:

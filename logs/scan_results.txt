@@ -1,0 +1,50 @@
+TOTAL FILES: 341
+TOTAL SIZE: 9179034 bytes
+EMPTY FILES: 46
+---EMPTY LIST---
+\auditoria_completa_final.md
+\scan_results.txt
+\tree_frontend.txt
+\backend\blockchain\contract_abi.py
+\backend\oracle\automation.py
+\contracts\.env.example
+\contracts\contracts\interfaces\IBatchRegistry.sol
+\contracts\contracts\interfaces\IDelegationManager.sol
+\contracts\contracts\interfaces\IGreenHydrogenSBT.sol
+\contracts\scripts\upgrade.js
+\contracts\scripts\verify.js
+\contracts\test\BatchRegistry.test.js
+\contracts\test\ComplianceVerifier.test.js
+\contracts\test\integration.test.js
+\docs\delegation_guide.md
+\docs\namibia_reference.md
+\frontend\app\api\[...path]\route.ts
+\frontend\app\auditor\components\BatchVerification.tsx
+\frontend\app\auditor\components\BlockchainProof.tsx
+\frontend\app\auditor\components\ComplianceReport.tsx
+\frontend\app\auditor\verify\[batchId]\page.tsx
+\frontend\app\producer\batches\page.tsx
+\frontend\app\producer\certificates\page.tsx
+\frontend\app\producer\delegation\page.tsx
+\frontend\public\favicon.ico
+\frontend\public\logo.svg
+\frontend\src\components\layout\Footer.tsx
+\frontend\src\components\layout\Header.tsx
+\frontend\src\components\layout\Sidebar.tsx
+\frontend\src\components\shared\ErrorBoundary.tsx
+\frontend\src\components\shared\LoadingSpinner.tsx
+\frontend\src\components\shared\QRCode.tsx
+\frontend\src\components\ui\dialog.tsx
+\frontend\src\lib\web3.ts
+\iot\data\sample_readings.json
+\iot\scripts\generate_mock_data.py
+\monitoring\prometheus.yml
+\monitoring\alerts\alert_rules.yml
+\monitoring\grafana\dashboards\h2v_trust.json
+\scripts\create_cbam_report.py
+\scripts\deploy_contracts.sh
+\scripts\test_compliance.py
+\tests\conftest.py
+\tests\test_blockchain.py
+\tests\test_delegation.py
+\tests\test_oracle.py

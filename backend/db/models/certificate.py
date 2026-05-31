@@ -19,6 +19,7 @@ class Certificate(Base):
     __tablename__ = "certificates"
     
     id = Column(String(36), primary_key=True, index=True)
+    tenant_id = Column(String(100), nullable=False, index=True, default="default")
     batch_id = Column(String(36), ForeignKey("batches.id"), nullable=False, index=True)
     token_id = Column(BigInteger, nullable=False, index=True)
     blockchain_tx_hash = Column(String(66), nullable=False)

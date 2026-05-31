@@ -1,6 +1,9 @@
 ﻿import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+
 import "./globals.css";
+
+import NavbarWrapper from "@/components/layout/NavbarWrapper";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,8 +18,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="pt-BR" className="dark">
-      <body className={inter.className}>{children}</body>
+    <html lang="pt-BR">
+      <head>
+        <link href="https://fonts.cdnfonts.com/css/rawline" rel="stylesheet" />
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Raleway:300,400,500,600,700,800,900&display=swap" />
+      </head>
+      <body className={inter.className}>
+        <NavbarWrapper />
+        <main>{children}</main>
+      </body>
     </html>
   );
 }

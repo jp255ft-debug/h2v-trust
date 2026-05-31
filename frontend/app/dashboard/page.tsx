@@ -7,6 +7,8 @@ import ProductionChart from "./components/ProductionChart";
 import EmissionsGauge from "./components/EmissionsGauge";
 import CertificatesTable from "./components/CertificatesTable";
 import WaterCompliance from "./components/WaterCompliance";
+import SystemStatus from "@/components/shared/SystemStatus";
+
 
 export default function Dashboard() {
   const [metrics, setMetrics] = useState([
@@ -114,19 +116,8 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-background">
-      <nav className="border-b bg-card">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center gap-6">
-            <Link href="/" className="text-xl font-bold text-foreground hover:text-primary transition">H2V-Trust</Link>
-            <div className="flex gap-4">
-              <Link href="/dashboard" className="text-sm font-medium text-primary transition">Dashboard</Link>
-              <Link href="/auditor" className="text-sm font-medium text-foreground hover:text-primary transition">Auditor</Link>
-              <Link href="/producer" className="text-sm font-medium text-foreground hover:text-primary transition">Produtor</Link>
-            </div>
-          </div>
-        </div>
-      </nav>
       <div className="max-w-7xl mx-auto px-6 py-8 space-y-8">
+
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-foreground">Dashboard H2V-Trust</h1>
           <p className="text-muted-foreground mt-2">Monitoramento e indicadores do sistema de certificação blockchain para hidrogênio verde</p>
@@ -170,24 +161,9 @@ export default function Dashboard() {
           </div>
         </div>
 
-        {/* System Status */}
-        <div className="bg-card text-card-foreground rounded-lg border shadow-sm">
-          <div className="p-6"><h2 className="text-xl font-semibold">Status do Sistema</h2></div>
-          <div className="p-6 pt-0 space-y-4">
-            <div className="flex items-center justify-between p-4 rounded-lg border bg-green-50 dark:bg-green-950/20 border-green-200 dark:border-green-800">
-              <div><p className="font-medium text-green-700 dark:text-green-400">✅ Frontend</p><p className="text-sm text-green-600 dark:text-green-500">Next.js rodando em localhost:3000</p></div>
-              <span className="px-3 py-1 rounded-full text-sm font-medium bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200">Operacional</span>
-            </div>
-            <div className="flex items-center justify-between p-4 rounded-lg border bg-blue-50 dark:bg-blue-950/20 border-blue-200 dark:border-blue-800">
-              <div><p className="font-medium text-blue-700 dark:text-blue-400">🔗 Backend API</p><p className="text-sm text-blue-600 dark:text-blue-500">FastAPI pronto para iniciar na porta 8000</p></div>
-              <span className="px-3 py-1 rounded-full text-sm font-medium bg-blue-100 dark:bg-blue-900 text-blue-800 dark:text-blue-200">Pronto</span>
-            </div>
-            <div className="flex items-center justify-between p-4 rounded-lg border bg-purple-50 dark:bg-purple-950/20 border-purple-200 dark:border-purple-800">
-              <div><p className="font-medium text-purple-700 dark:text-purple-400">⚙️ Blockchain</p><p className="text-sm text-purple-600 dark:text-purple-500">Contratos Ethereum configurados</p></div>
-              <span className="px-3 py-1 rounded-full text-sm font-medium bg-purple-100 dark:bg-purple-900 text-purple-800 dark:text-purple-200">Configurado</span>
-            </div>
-          </div>
-        </div>
+        {/* System Status - AGORA COM HEALTH CHECK REAL */}
+        <SystemStatus />
+
 
         {/* Next Steps */}
         <div className="bg-card text-card-foreground rounded-lg border shadow-sm">

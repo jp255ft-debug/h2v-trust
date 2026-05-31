@@ -1,6 +1,6 @@
 from pydantic import BaseModel, Field, field_validator, ConfigDict
 from datetime import datetime
-from typing import Literal
+from typing import Literal, Optional
 
 
 class TelemetryData(BaseModel):
@@ -11,6 +11,7 @@ class TelemetryData(BaseModel):
     ghg_emissions_kgCO2_per_kgH2: float = Field(ge=0)
     water_consumption_liters: float = Field(ge=0)
     water_source: Literal["desalination", "treated_wastewater", "surface_water", "groundwater", "recycled"]
+    producer_wallet: Optional[str] = None
 
     @field_validator("ghg_emissions_kgCO2_per_kgH2", mode="before")
     def validate_ghg(cls, v):

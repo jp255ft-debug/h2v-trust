@@ -1,22 +1,36 @@
+# Stage 1: Builder — compila dependências C (gcc, libpq-dev)
+FROM python:3.11-slim AS builder
+
+WORKDIR /app
+
+# Instalar build deps necessárias para compilar psycopg2 e outras libs C
+RUN apt-get update && apt-get install -y \
+    gcc \
+    libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+# Copiar e instalar apenas dependências de produção
+COPY requirements.prod.txt .
+RUN pip install --no-cache-dir -r requirements.prod.txt
+
+# Stage 2: Runner — imagem mínima sem build deps
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies
+# Instalar apenas runtime deps (libpq, sem gcc/curl/postgresql-client)
 RUN apt-get update && apt-get install -y \
-    gcc \
-    postgresql-client \
+    libpq-dev \
     && rm -rf /var/lib/apt/lists/*
 
-# Copy production requirements and install Python dependencies
-COPY requirements.prod.txt .
-RUN pip install --no-cache-dir -r requirements.prod.txt
+# Copiar pacotes Python compilados do builder
+COPY --from=builder /usr/local/lib/python3.11/site-packages /usr/local/lib/python3.11/site-packages
 
-# Copy application code
+# Copiar código da aplicação
 COPY . .
 
 # Expose port
 EXPOSE 8000
 
 # Run with Gunicorn (production-grade)
-CMD ["gunicorn", "main:app", "--workers", "4", "--worker-class", "uvicorn.workers.UvicornWorker", "--bind", "0.0.0.0:8000"]
+CMD ["gunicorn", "main:app", "-w", "4", "-k", "uvicorn.workers.UvicornWorker", "-b", "0.0.0.0:8000"]

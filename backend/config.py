@@ -4,8 +4,9 @@ import os
 
 
 class Settings(BaseSettings):
-    # Database
-    DATABASE_URL: str = "sqlite:///./h2v_trust.db"
+    # Database - Deve ser definida via .env ou variável de ambiente do Docker
+    # Exemplo: postgresql://user:password@timescaledb:5432/h2v_trust
+    DATABASE_URL: str = ""
     TIMESCALE_COMPRESSION_INTERVAL: str = "7 days"
 
     # Blockchain

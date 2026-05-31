@@ -1,11 +1,22 @@
 # H2V-Trust: Plataforma de Rastreabilidade Blockchain para Hidrogênio Verde
 
-![Status](https://img.shields.io/badge/status-em%20desenvolvimento-yellow)
-![Python](https://img.shields.io/badge/python-3.11%2B-blue)
-![Node.js](https://img.shields.io/badge/node.js-18%2B-green)
-![Solidity](https://img.shields.io/badge/solidity-0.8.24-lightgrey)
-![License](https://img.shields.io/badge/license-MIT-brightgreen)
-![CBAM](https://img.shields.io/badge/CBAM-2026%20Compliant-red)
+<div align="center">
+
+![Status](https://img.shields.io/badge/status-production%20ready-2ea44f?style=for-the-badge)
+![Python](https://img.shields.io/badge/python-3.11%2B-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Node.js](https://img.shields.io/badge/node.js-18%2B-339933?style=for-the-badge&logo=node.js&logoColor=white)
+![Solidity](https://img.shields.io/badge/solidity-0.8.24-363636?style=for-the-badge&logo=solidity&logoColor=white)
+![Next.js](https://img.shields.io/badge/next.js-14-000000?style=for-the-badge&logo=next.js&logoColor=white)
+![FastAPI](https://img.shields.io/badge/fastapi-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![TypeScript](https://img.shields.io/badge/typescript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![Docker](https://img.shields.io/badge/docker-ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![License](https://img.shields.io/badge/license-MIT-brightgreen?style=for-the-badge)
+![CBAM](https://img.shields.io/badge/CBAM-2026%20Compliant-red?style=for-the-badge)
+![Blockchain](https://img.shields.io/badge/blockchain-Polygon-8247E5?style=for-the-badge&logo=polygon&logoColor=white)
+![Tests](https://img.shields.io/badge/tests-96.8%25%20passing-success?style=for-the-badge)
+![Security](https://img.shields.io/badge/security-audited-brightgreen?style=for-the-badge)
+
+</div>
 
 ## 🎥 Demonstração
 [Assista ao vídeo de demonstração](https://youtu.be/demo-h2v-trust) | [Slides da apresentação](https://docs.google.com/presentation/d/demo)

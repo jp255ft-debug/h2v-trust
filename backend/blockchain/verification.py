@@ -1,7 +1,15 @@
+import logging
 from blockchain.web3_client import get_contract
 
+logger = logging.getLogger(__name__)
+
 async def verify_certificate_on_chain(token_id: int) -> dict:
-    contract = get_contract()
+    try:
+        contract = get_contract()
+    except (ConnectionError, TimeoutError, Exception) as e:
+        logger.warning(f"Blockchain connection failed during verification of token {token_id}: {e}")
+        return {"error": "Blockchain unavailable", "token_id": token_id}
+    
     try:
         is_consumed = contract.functions.isConsumed(token_id).call()
         batch_hash = contract.functions.getBatchDataHash(token_id).call()
@@ -18,5 +26,9 @@ async def verify_certificate_on_chain(token_id: int) -> dict:
             "energy_source": energy,
             "batch_size_kg": size,
         }
+    except ConnectionError as e:
+        logger.warning(f"Blockchain connection lost during verification of token {token_id}: {e}")
+        return {"error": "Blockchain connection lost", "token_id": token_id}
     except Exception as e:
-        return {"error": str(e)}
+        logger.warning(f"Verification failed for token {token_id}: {e}")
+        return {"error": str(e), "token_id": token_id}

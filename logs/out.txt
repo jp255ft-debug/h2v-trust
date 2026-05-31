@@ -1,0 +1,116 @@
+C:\Users\Usuario\AppData\Local\Programs\Python\Python313\Lib\site-packages\requests\__init__.py:113: RequestsDependencyWarning: urllib3 (2.6.3) or chardet (7.4.3)/charset_normalizer (3.4.4) doesn't match a supported version!
+  warnings.warn(
+Status Code: 422
+Response: {
+  "detail": [
+    {
+      "type": "missing",
+      "loc": [
+        "body",
+        "sensor_id"
+      ],
+      "msg": "Field required",
+      "input": {
+        "batch_id": "test_batch_001",
+        "producer_wallet": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "size_kg": 1500,
+        "ghg_emissions": 2.5,
+        "water_consumption": 12.0,
+        "energy_source": "Solar",
+        "water_source": "Recycled"
+      }
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "body",
+        "timestamp"
+      ],
+      "msg": "Field required",
+      "input": {
+        "batch_id": "test_batch_001",
+        "producer_wallet": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "size_kg": 1500,
+        "ghg_emissions": 2.5,
+        "water_consumption": 12.0,
+        "energy_source": "Solar",
+        "water_source": "Recycled"
+      }
+    },
+    {
+      "type": "literal_error",
+      "loc": [
+        "body",
+        "energy_source"
+      ],
+      "msg": "Input should be 'wind', 'solar', 'hydro', 'biomass', 'grid', 'natural_gas', 'diesel' or 'coal'",
+      "input": "Solar",
+      "ctx": {
+        "expected": "'wind', 'solar', 'hydro', 'biomass', 'grid', 'natural_gas', 'diesel' or 'coal'"
+      }
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "body",
+        "power_generated_mwh"
+      ],
+      "msg": "Field required",
+      "input": {
+        "batch_id": "test_batch_001",
+        "producer_wallet": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "size_kg": 1500,
+        "ghg_emissions": 2.5,
+        "water_consumption": 12.0,
+        "energy_source": "Solar",
+        "water_source": "Recycled"
+      }
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "body",
+        "ghg_emissions_kgCO2_per_kgH2"
+      ],
+      "msg": "Field required",
+      "input": {
+        "batch_id": "test_batch_001",
+        "producer_wallet": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "size_kg": 1500,
+        "ghg_emissions": 2.5,
+        "water_consumption": 12.0,
+        "energy_source": "Solar",
+        "water_source": "Recycled"
+      }
+    },
+    {
+      "type": "missing",
+      "loc": [
+        "body",
+        "water_consumption_liters"
+      ],
+      "msg": "Field required",
+      "input": {
+        "batch_id": "test_batch_001",
+        "producer_wallet": "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+        "size_kg": 1500,
+        "ghg_emissions": 2.5,
+        "water_consumption": 12.0,
+        "energy_source": "Solar",
+        "water_source": "Recycled"
+      }
+    },
+    {
+      "type": "literal_error",
+      "loc": [
+        "body",
+        "water_source"
+      ],
+      "msg": "Input should be 'desalination', 'treated_wastewater', 'surface_water', 'groundwater' or 'recycled'",
+      "input": "Recycled",
+      "ctx": {
+        "expected": "'desalination', 'treated_wastewater', 'surface_water', 'groundwater' or 'recycled'"
+      }
+    }
+  ]
+}

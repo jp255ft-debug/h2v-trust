@@ -55,6 +55,29 @@ from .delegation import (
     DelegationExpirationNotification
 )
 
+from .auth import (
+    LoginRequest,
+    TokenResponse,
+    TokenData,
+)
+
+from .tenant import (
+    TenantBase,
+    TenantCreate,
+    TenantUpdate,
+    TenantResponse,
+    TenantListResponse,
+)
+
+from .user import (
+    UserBase,
+    UserCreate,
+    UserResponse,
+    UserTenantCreate,
+    UserTenantResponse,
+    UserTenantListResponse,
+)
+
 # Re-export commonly used models
 __all__ = [
     # Batch models
@@ -105,4 +128,24 @@ __all__ = [
     "DelegationStats",
     "DelegationSearchRequest",
     "DelegationExpirationNotification",
+    
+    # Auth models
+    "LoginRequest",
+    "TokenResponse",
+    "TokenData",
+    
+    # Tenant models
+    "TenantBase",
+    "TenantCreate",
+    "TenantUpdate",
+    "TenantResponse",
+    "TenantListResponse",
+    
+    # User models
+    "UserBase",
+    "UserCreate",
+    "UserResponse",
+    "UserTenantCreate",
+    "UserTenantResponse",
+    "UserTenantListResponse",
 ]

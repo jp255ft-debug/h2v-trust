@@ -13,7 +13,7 @@ class BatchService:
     def __init__(self, db: Session):
         self.db = db
 
-    async def create_batch(self, telemetry: TelemetryData, compliance: Dict, batch_size_kg: float) -> BatchORM:
+    async def create_batch(self, telemetry: TelemetryData, compliance: Dict, batch_size_kg: float, tenant_id: str = "default") -> BatchORM:
         batch_id = str(uuid.uuid4())
         batch_hash = generate_batch_hash(telemetry.dict())
 
@@ -38,6 +38,7 @@ class BatchService:
             is_compliant=compliance["is_compliant"],
             compliance_report=compliance,
             batch_hash=batch_hash,
+            tenant_id=tenant_id,
             created_at=datetime.utcnow(),
         )
         self.db.add(batch)
@@ -45,8 +46,20 @@ class BatchService:
         self.db.refresh(batch)
         return batch
 
-    def get_batches(self, skip: int, limit: int, producer_id: Optional[str], compliant_only: bool) -> List[Dict]:
+    def get_batches(self, skip: int, limit: int, producer_id: Optional[str], compliant_only: bool, tenant_id: Optional[str] = "default") -> List[Dict]:
+        """
+        List batches with optional tenant isolation.
+        
+        Args:
+            tenant_id: If None (auditor), returns batches from ALL tenants.
+                       If string (producer), returns only that tenant's batches.
+        """
         query = self.db.query(BatchORM).options(joinedload(BatchORM.telemetry))
+        
+        # Apenas filtra por tenant se tenant_id não for None (auditor vê tudo)
+        if tenant_id is not None:
+            query = query.filter(BatchORM.tenant_id == tenant_id)
+        
         if producer_id:
             query = query.filter(BatchORM.producer_id == producer_id)
         if compliant_only:
@@ -54,10 +67,38 @@ class BatchService:
         batches = query.offset(skip).limit(limit).all()
         return [b.to_dict() for b in batches]
 
-    def get_batch_by_id(self, batch_id: str) -> Optional[Dict]:
-        batch = self.db.query(BatchORM).options(joinedload(BatchORM.telemetry)).filter(BatchORM.id == batch_id).first()
+    def get_batch_by_id(self, batch_id: str, tenant_id: Optional[str] = "default") -> Optional[Dict]:
+        """
+        Get a single batch by ID with tenant isolation.
+        
+        Args:
+            tenant_id: If None (auditor), can access any tenant's batch.
+                       If string (producer), only returns if batch belongs to that tenant.
+        """
+        query = self.db.query(BatchORM).options(joinedload(BatchORM.telemetry)).filter(
+            BatchORM.id == batch_id
+        )
+        
+        # Apenas filtra por tenant se tenant_id não for None
+        if tenant_id is not None:
+            query = query.filter(BatchORM.tenant_id == tenant_id)
+        
+        batch = query.first()
         return batch.to_dict() if batch else None
 
-    def get_compliance_report(self, batch_id: str) -> Optional[Dict]:
-        batch = self.db.query(BatchORM).filter(BatchORM.id == batch_id).first()
+    def get_compliance_report(self, batch_id: str, tenant_id: Optional[str] = "default") -> Optional[Dict]:
+        """
+        Get compliance report for a batch with tenant isolation.
+        
+        Args:
+            tenant_id: If None (auditor), can access any tenant's report.
+                       If string (producer), only returns if batch belongs to that tenant.
+        """
+        query = self.db.query(BatchORM).filter(BatchORM.id == batch_id)
+        
+        # Apenas filtra por tenant se tenant_id não for None
+        if tenant_id is not None:
+            query = query.filter(BatchORM.tenant_id == tenant_id)
+        
+        batch = query.first()
         return batch.compliance_report if batch else None

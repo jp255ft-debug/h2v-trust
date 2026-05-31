@@ -9,6 +9,7 @@ export interface Batch {
   production_location?: string;
   size_kg: number;
   is_compliant: boolean;
+  blockchain_status?: string;
   compliance_report?: ComplianceReport;
   batch_hash?: string;
   telemetry?: TelemetrySummary;
@@ -20,6 +21,16 @@ export interface ComplianceReport {
   checks: ComplianceChecks;
   violations: string[];
   cbam_report?: CBAMReport;
+  score?: number;
+  standard?: string;
+  ghg_emissions?: number;
+  ghg_limit?: number;
+  ghg_compliant?: boolean;
+  water_consumption?: number;
+  water_limit?: number;
+  water_compliant?: boolean;
+  energy_source?: string;
+  water_source?: string;
 }
 
 export interface ComplianceChecks {

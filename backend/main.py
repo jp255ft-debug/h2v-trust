@@ -8,8 +8,9 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy import text
 
-from api.routes import telemetry, batches, certificates, compliance, delegation, reports
+from api.routes import telemetry, batches, certificates, compliance, delegation, reports, auth, admin
 from db.database import engine, Base, init_db
 from config import settings
 
@@ -52,8 +53,92 @@ app.include_router(certificates.router, prefix="/api/v1", tags=["Certificates"])
 app.include_router(compliance.router, prefix="/api/v1", tags=["Compliance"])
 app.include_router(delegation.router, prefix="/api/v1", tags=["Delegation"])
 app.include_router(reports.router, prefix="/api/v1", tags=["Reports"])
+app.include_router(auth.router)
+app.include_router(admin.router)
 
 
 @app.get("/health")
 async def health_check():
-    return {"status": "ok", "service": "H2V-Trust"}
+    """Health check endpoint that verifies database and blockchain connectivity."""
+    import time
+    
+    health = {
+        "status": "ok",
+        "service": "H2V-Trust",
+        "version": "1.0.0",
+        "timestamp": time.time(),
+        "checks": {}
+    }
+    
+    # 1. Database check
+    db_status = "ok"
+    db_details = {}
+    try:
+        with engine.connect() as conn:
+            result = conn.execute(text("SELECT 1"))
+            result.fetchone()
+            db_details["connected"] = True
+            
+            # Check if tables exist
+            result = conn.execute(
+                text("SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'public'")
+            )
+            table_count = result.scalar()
+            db_details["table_count"] = table_count
+    except Exception as e:
+        db_status = "degraded"
+        db_details["error"] = str(e)
+        health["status"] = "degraded"
+    
+    health["checks"]["database"] = {
+        "status": db_status,
+        "details": db_details
+    }
+    
+    # 2. Blockchain check
+    blockchain_status = "ok"
+    blockchain_details = {}
+    try:
+        from blockchain.web3_client import is_connected, get_network_info
+        blockchain_details["connected"] = is_connected()
+        network_info = get_network_info()
+        blockchain_details["chain_id"] = network_info.get("chain_id")
+        blockchain_details["block_number"] = network_info.get("block_number")
+        blockchain_details["rpc_url"] = network_info.get("rpc_url")
+        blockchain_details["mock_mode"] = settings.MOCK_MODE
+        
+        if not blockchain_details["connected"]:
+            blockchain_status = "degraded"
+            if health["status"] == "ok":
+                health["status"] = "degraded"
+    except Exception as e:
+        blockchain_status = "degraded"
+        blockchain_details["error"] = str(e)
+        if health["status"] == "ok":
+            health["status"] = "degraded"
+    
+    health["checks"]["blockchain"] = {
+        "status": blockchain_status,
+        "details": blockchain_details
+    }
+    
+    # 3. Redis check (if configured)
+    redis_status = "ok"
+    redis_details = {}
+    try:
+        import redis as redis_lib
+        r = redis_lib.from_url(settings.REDIS_URL, socket_connect_timeout=3)
+        r.ping()
+        redis_details["connected"] = True
+    except Exception as e:
+        redis_status = "degraded"
+        redis_details["error"] = str(e)
+        if health["status"] == "ok":
+            health["status"] = "degraded"
+    
+    health["checks"]["redis"] = {
+        "status": redis_status,
+        "details": redis_details
+    }
+    
+    return health

@@ -2,6 +2,9 @@
 
 ## 🌿 Plataforma de Rastreabilidade Blockchain para Hidrogênio Verde
 
+> **Data de atualização:** 27/04/2026
+> **Versão:** MVP (Fase 1 Concluída)
+
 ---
 
 ## 1. ÁRVORE COMPLETA DO PROJETO
@@ -9,185 +12,385 @@
 ```
 h2v-trust/
 │
-├── 📁 backend/                    # API FastAPI (Python 3.11+)
-│   ├── main.py                    # Ponto de entrada da API
-│   ├── config.py                  # Configurações centralizadas
-│   ├── Dockerfile                 # Container da API
-│   ├── requirements.txt           # Dependências Python
+├── 📁 backend/                          # API FastAPI (Python 3.11+)
+│   ├── main.py                          # Ponto de entrada da API
+│   ├── config.py                        # Configurações centralizadas
+│   ├── Dockerfile                       # Container da API (dev)
+│   ├── Dockerfile.prod                  # Container da API (prod)
+│   ├── requirements.txt                 # Dependências Python
+│   ├── requirements.prod.txt            # Dependências produção
+│   ├── requirements-minimal.txt         # Dependências mínimas
+│   ├── requirements.dev.txt             # Dependências desenvolvimento
 │   │
-│   ├── 📁 api/                    # Rotas REST
+│   ├── 📁 api/                          # Rotas REST
+│   │   ├── __init__.py
 │   │   └── 📁 routes/
-│   │       ├── telemetry.py       # Ingestão de dados IoT
-│   │       ├── batches.py         # Gerenciamento de lotes
-│   │       ├── certificates.py    # Certificação de lotes
-│   │       ├── compliance.py      # Verificação CBAM
-│   │       ├── delegation.py      # Delegação CBAM
-│   │       └── reports.py         # Relatórios CBAM
+│   │       ├── __init__.py
+│   │       ├── telemetry.py             # Ingestão de dados IoT
+│   │       ├── batches.py               # Gerenciamento de lotes
+│   │       ├── certificates.py          # Certificação de lotes
+│   │       ├── compliance.py            # Verificação CBAM
+│   │       ├── delegation.py            # Delegação CBAM
+│   │       └── reports.py               # Relatórios CBAM
+│   │   └── 📁 dependencies/
+│   │       ├── __init__.py
+│   │       ├── auth.py                  # Autenticação
+│   │       ├── db.py                    # Dependência de banco
+│   │       └── rate_limit.py            # Rate limiting
 │   │
-│   ├── 📁 core/                   # Lógica de negócio
-│   │   ├── constants.py           # Constantes CBAM 2026
-│   │   ├── compliance.py          # Verificador de compliance
-│   │   ├── emissions.py           # Cálculo de emissões
-│   │   ├── water.py               # Conformidade hídrica
-│   │   ├── certificates.py        # Geração de certificados
-│   │   └── delegation.py          # Gestão de delegação
+│   ├── 📁 core/                         # Lógica de negócio
+│   │   ├── __init__.py
+│   │   ├── constants.py                 # Constantes CBAM 2026
+│   │   ├── compliance.py                # Verificador de compliance
+│   │   ├── emissions.py                 # Cálculo de emissões
+│   │   ├── water.py                     # Conformidade hídrica
+│   │   ├── certificates.py              # Geração de certificados
+│   │   └── delegation.py                # Gestão de delegação
 │   │
-│   ├── 📁 blockchain/             # Integração blockchain
-│   │   ├── web3_client.py         # Cliente Web3
-│   │   ├── contract_abi.py        # ABIs dos contratos
-│   │   ├── minting.py             # Mint de SBTs
-│   │   └── verification.py        # Verificação on-chain
+│   ├── 📁 blockchain/                   # Integração blockchain
+│   │   ├── __init__.py
+│   │   ├── web3_client.py               # Cliente Web3
+│   │   ├── contract_abi.py              # ABIs dos contratos
+│   │   ├── minting.py                   # Mint de SBTs
+│   │   ├── sbt_manager.py               # Gerenciador SBT
+│   │   ├── verification.py              # Verificação on-chain
+│   │   └── GreenHydrogenSBT.json        # ABI do contrato
 │   │
-│   ├── 📁 oracle/                 # Oráculos e dados externos
-│   │   ├── satellite_monitor.py   # Monitoramento por satélite
-│   │   └── automation.py          # Automação de tarefas
+│   ├── 📁 oracle/                       # Oráculos e dados externos
+│   │   ├── __init__.py
+│   │   ├── satellite_monitor.py         # Monitoramento por satélite
+│   │   ├── automation.py                # Automação de tarefas
+│   │   ├── chainlink_client.py          # Cliente Chainlink
+│   │   └── sensor_aggregator.py         # Agregador de sensores
 │   │
-│   ├── 📁 db/                     # Banco de dados
-│   │   ├── database.py            # Conexão TimescaleDB
+│   ├── 📁 db/                           # Banco de dados
+│   │   ├── __init__.py
+│   │   ├── database.py                  # Conexão TimescaleDB
+│   │   ├── models.py                    # Modelos ORM
 │   │   └── 📁 models/
-│   │       ├── batch.py           # Modelo de lote
-│   │       ├── certificate.py     # Modelo de certificado
-│   │       ├── telemetry_record.py# Modelo de telemetria
-│   │       ├── audit_log.py       # Log de auditoria
-│   │       └── delegation.py      # Modelo de delegação
+│   │       ├── __init__.py
+│   │       ├── batch.py                 # Modelo de lote
+│   │       ├── certificate.py           # Modelo de certificado
+│   │       ├── telemetry_record.py      # Modelo de telemetria
+│   │       ├── audit_log.py             # Log de auditoria
+│   │       └── delegation.py            # Modelo de delegação
 │   │
-│   ├── 📁 models/                 # Modelos Pydantic
+│   ├── 📁 models/                       # Modelos Pydantic
+│   │   ├── __init__.py
 │   │   ├── batch.py
 │   │   ├── certificate.py
 │   │   ├── compliance.py
 │   │   ├── delegation.py
 │   │   └── telemetry.py
 │   │
-│   ├── 📁 services/               # Serviços de negócio
-│   │   ├── certificate_service.py # Serviço de certificados
-│   │   ├── delegation_service.py  # Serviço de delegação
-│   │   ├── report_service.py      # Geração de relatórios
-│   │   └── exporter_service.py    # Exportação de dados
+│   ├── 📁 services/                     # Serviços de negócio
+│   │   ├── __init__.py
+│   │   ├── batch_service.py             # Serviço de lotes
+│   │   ├── certificate_service.py       # Serviço de certificados
+│   │   ├── delegation_service.py        # Serviço de delegação
+│   │   ├── report_service.py            # Geração de relatórios
+│   │   ├── exporter_service.py          # Exportação de dados
+│   │   └── qrcode_service.py            # Geração de QR Codes
 │   │
-│   └── 📁 utils/                  # Utilitários
-│       ├── hashing.py             # Funções de hash
-│       └── metrics.py             # Métricas Prometheus
-│
-├── 📁 contracts/                  # Smart Contracts Solidity
-│   ├── hardhat.config.js          # Config Hardhat
-│   ├── 📁 contracts/
-│   │   ├── GreenHydrogenSBT.sol   # Token Soulbound (SBT)
-│   │   ├── BatchRegistry.sol      # Registro de lotes
-│   │   ├── ComplianceVerifier.sol # Verificação on-chain
-│   │   ├── DelegationManager.sol  # Gestão de delegação
-│   │   └── 📁 interfaces/         # Interfaces dos contratos
-│   ├── 📁 scripts/                # Scripts de deploy
-│   └── 📁 test/                   # Testes dos contratos
-│
-├── 📁 frontend/                   # Next.js 14 + TypeScript
-│   ├── next.config.js
-│   ├── package.json
-│   ├── Dockerfile
+│   ├── 📁 utils/                        # Utilitários
+│   │   ├── __init__.py
+│   │   ├── hashing.py                   # Funções de hash
+│   │   ├── logging.py                   # Configuração de logs
+│   │   ├── metrics.py                   # Métricas Prometheus
+│   │   └── validators.py               # Validadores
 │   │
-│   ├── 📁 app/                    # App Router
-│   │   ├── page.tsx               # Landing page
-│   │   ├── layout.tsx             # Layout principal
+│   └── 📁 tests/                        # Testes do backend
+│       └── __init__.py
+│
+├── 📁 contracts/                        # Smart Contracts Solidity
+│   ├── hardhat.config.js                # Config Hardhat
+│   ├── package.json                     # Dependências Node
+│   ├── .env                             # Variáveis de ambiente
+│   ├── .env.example                     # Exemplo de env
+│   ├── check_balance.js                 # Script de consulta
+│   │
+│   ├── 📁 contracts/                    # Código fonte Solidity
+│   │   ├── GreenHydrogenSBT.sol         # Token Soulbound (SBT)
+│   │   ├── BatchRegistry.sol            # Registro de lotes
+│   │   ├── ComplianceVerifier.sol       # Verificação on-chain
+│   │   ├── DelegationManager.sol        # Gestão de delegação
+│   │   ├── IBatchRegistry.sol           # Interface BatchRegistry
+│   │   ├── IComplianceVerifier.sol      # Interface ComplianceVerifier
+│   │   ├── IDelegationManager.sol       # Interface DelegationManager
+│   │   ├── IGreenHydrogenSBT.sol        # Interface GreenHydrogenSBT
+│   │   └── 📁 interfaces/               # Interfaces simplificadas
+│   │       ├── IBasicBatchRegistry.sol
+│   │       ├── IBasicComplianceVerifier.sol
+│   │       └── IBasicGreenHydrogenSBT.sol
+│   │
+│   ├── 📁 scripts/                      # Scripts de deploy
+│   │   ├── deploy.js                    # Deploy dos contratos
+│   │   ├── test_mint.js                 # Teste de mint
+│   │   ├── upgrade.js                   # Upgrade de contratos
+│   │   └── verify.js                    # Verificação em explorer
+│   │
+│   ├── 📁 test/                         # Testes dos contratos
+│   │   ├── GreenHydrogenSBT.test.js
+│   │   ├── BatchRegistry.test.js
+│   │   ├── ComplianceVerifier.test.js
+│   │   └── integration.test.js
+│   │
+│   ├── 📁 artifacts/                    # Artefatos compilados
+│   │   ├── 📁 contracts/                # ABIs e bytecodes
+│   │   └── 📁 @openzeppelin/            # Dependências OpenZeppelin
+│   │
+│   └── 📁 cache/                        # Cache de compilação
+│
+├── 📁 frontend/                         # Next.js 14 + TypeScript
+│   ├── next.config.js                   # Config Next.js
+│   ├── package.json                     # Dependências
+│   ├── tsconfig.json                    # Config TypeScript
+│   ├── tailwind.config.js               # Config Tailwind
+│   ├── postcss.config.js                # Config PostCSS
+│   ├── Dockerfile                       # Container (dev)
+│   ├── Dockerfile.prod                  # Container (prod)
+│   ├── .env.local                       # Variáveis de ambiente
+│   ├── .nvmrc                           # Versão Node
+│   │
+│   ├── 📁 app/                          # App Router (Next.js 14)
+│   │   ├── layout.tsx                   # Layout principal
+│   │   ├── page.tsx                     # Landing page
+│   │   ├── globals.css                  # Estilos globais
 │   │   │
-│   │   ├── 📁 dashboard/          # Dashboard principal
-│   │   │   ├── page.tsx           # Dashboard com métricas
+│   │   ├── 📁 dashboard/                # Dashboard principal
+│   │   │   ├── page.tsx                 # Dashboard com métricas
+│   │   │   ├── page-simple.tsx          # Versão simplificada
+│   │   │   ├── test-page.tsx            # Página de teste
 │   │   │   └── 📁 components/
-│   │   │       ├── ProductionChart.tsx    # Gráfico de produção
-│   │   │       ├── EmissionsGauge.tsx     # Medidor de emissões
-│   │   │       ├── CertificatesTable.tsx  # Tabela de certificados
-│   │   │       └── WaterCompliance.tsx    # Conformidade hídrica
+│   │   │       ├── ProductionChart.tsx   # Gráfico de produção
+│   │   │       ├── EmissionsGauge.tsx    # Medidor de emissões
+│   │   │       ├── CertificatesTable.tsx # Tabela de certificados
+│   │   │       └── WaterCompliance.tsx   # Conformidade hídrica
 │   │   │
-│   │   ├── 📁 auditor/            # Portal do Auditor
-│   │   │   ├── page.tsx           # Página principal
+│   │   ├── 📁 auditor/                  # Portal do Auditor
+│   │   │   ├── page.tsx                 # Página principal
+│   │   │   ├── page-backup.tsx          # Backup da página
 │   │   │   ├── 📁 components/
-│   │   │   │   └── BatchVerification.tsx  # Verificação de lotes
+│   │   │   │   └── BatchVerification.tsx # Verificação de lotes
 │   │   │   └── 📁 verify/[batchId]/
-│   │   │       └── page.tsx       # Verificação individual
+│   │   │       └── page.tsx             # Verificação individual
 │   │   │
-│   │   ├── 📁 producer/           # Portal do Produtor
-│   │   │   ├── page.tsx           # Página principal
-│   │   │   └── 📁 batches/
-│   │   │       └── page.tsx       # Gerenciamento de lotes
+│   │   ├── 📁 producer/                 # Portal do Produtor
+│   │   │   ├── page.tsx                 # Página principal
+│   │   │   ├── 📁 batches/
+│   │   │   │   └── page.tsx             # Gerenciamento de lotes
+│   │   │   ├── 📁 certificates/
+│   │   │   │   └── page.tsx             # Certificados
+│   │   │   └── 📁 delegation/
+│   │   │       └── page.tsx             # Delegação CBAM
 │   │   │
-│   │   └── 📁 api/                # API Proxy
-│   │       └── [...path]/route.ts # Proxy para backend
+│   │   ├── 📁 api/                      # API Proxy
+│   │   │   └── [...path]/route.ts       # Proxy para backend
+│   │   │
+│   │   ├── 📁 debug/
+│   │   │   └── page.tsx                 # Página de debug
+│   │   ├── 📁 test/
+│   │   │   └── page.tsx                 # Página de teste
+│   │   └── 📁 simple/
+│   │       └── page.tsx                 # Página simples
 │   │
-│   └── 📁 src/
-│       ├── 📁 components/
-│       │   ├── 📁 layout/         # Componentes de layout
-│       │   │   └── Navbar.tsx
-│       │   ├── 📁 shared/         # Componentes compartilhados
-│       │   │   ├── ErrorBoundary.tsx
-│       │   │   ├── LoadingSpinner.tsx
-│       │   │   └── QRCode.tsx
-│       │   └── 📁 ui/             # Componentes UI (shadcn)
-│       │       ├── button.tsx
-│       │       ├── card.tsx
-│       │       ├── badge.tsx
-│       │       ├── dialog.tsx
-│       │       ├── dropdown-menu.tsx
-│       │       ├── input.tsx
-│       │       ├── label.tsx
-│       │       ├── progress.tsx
-│       │       ├── table.tsx
-│       │       └── tabs.tsx
-│       │
-│       ├── 📁 hooks/              # React Hooks
-│       │   ├── useBatch.ts        # Hook de lotes
-│       │   ├── useCertificate.ts  # Hook de certificados
-│       │   └── useCompliance.ts   # Hook de compliance
-│       │
-│       ├── 📁 lib/                # Utilitários
-│       │   ├── api.ts             # Cliente API
-│       │   ├── web3.ts            # Conexão Web3
-│       │   └── constants.ts       # Constantes
-│       │
-│       └── 📁 types/              # Tipos TypeScript
-│           ├── index.ts
-│           ├── batch.ts
-│           ├── certificate.ts
-│           └── compliance.ts
+│   ├── 📁 src/
+│   │   ├── 📁 components/
+│   │   │   ├── 📁 layout/               # Componentes de layout
+│   │   │   │   ├── Navbar.tsx
+│   │   │   │   ├── Header.tsx
+│   │   │   │   ├── Footer.tsx
+│   │   │   │   └── Sidebar.tsx
+│   │   │   ├── 📁 shared/               # Componentes compartilhados
+│   │   │   │   ├── ErrorBoundary.tsx
+│   │   │   │   ├── LoadingSpinner.tsx
+│   │   │   │   └── QRCode.tsx
+│   │   │   └── 📁 ui/                   # Componentes UI (shadcn)
+│   │   │       ├── badge.tsx
+│   │   │       ├── button.tsx
+│   │   │       ├── card.tsx
+│   │   │       ├── dialog.tsx
+│   │   │       ├── dropdown-menu.tsx
+│   │   │       ├── input.tsx
+│   │   │       ├── label.tsx
+│   │   │       ├── progress.tsx
+│   │   │       ├── table.tsx
+│   │   │       └── tabs.tsx
+│   │   │
+│   │   ├── 📁 hooks/                    # React Hooks
+│   │   │   ├── index.ts
+│   │   │   ├── useBatch.ts              # Hook de lotes
+│   │   │   ├── useCertificate.ts        # Hook de certificados
+│   │   │   ├── useCompliance.ts         # Hook de compliance
+│   │   │   └── 📁 example/
+│   │   │       └── HookExample.tsx
+│   │   │
+│   │   ├── 📁 lib/                      # Utilitários
+│   │   │   ├── api.ts                   # Cliente API
+│   │   │   ├── web3.ts                  # Conexão Web3
+│   │   │   ├── constants.ts             # Constantes
+│   │   │   └── utils.ts                 # Utilitários gerais
+│   │   │
+│   │   └── 📁 types/                    # Tipos TypeScript
+│   │       ├── index.ts
+│   │       ├── batch.ts
+│   │       ├── certificate.ts
+│   │       └── compliance.ts
+│   │
+│   └── 📁 tests/                        # Testes do frontend
+│       └── __init__.py
 │
-├── 📁 iot/                        # Simulador IoT
-│   ├── simulator.py               # Simulador de sensores
-│   └── config.yaml                # Configuração dos sensores
+├── 📁 iot/                              # Simulador IoT
+│   ├── simulator.py                     # Simulador de sensores
+│   ├── config.yaml                      # Configuração dos sensores
+│   ├── __init__.py
+│   ├── 📁 data/
+│   │   └── sample_readings.json         # Leituras de exemplo
+│   └── 📁 scripts/
+│       └── generate_mock_data.py        # Geração de dados mock
 │
-├── 📁 monitoring/                 # Monitoramento
-│   ├── prometheus.yml             # Config Prometheus
-│   ├── 📁 alerts/                 # Regras de alerta
-│   └── 📁 grafana/                # Dashboards Grafana
+├── 📁 monitoring/                       # Monitoramento
+│   ├── prometheus.yml                   # Config Prometheus
+│   ├── __init__.py
+│   ├── 📁 alerts/
+│   │   └── alert_rules.yml             # Regras de alerta
+│   └── 📁 grafana/
+│       ├── __init__.py
+│       ├── 📁 dashboards/
+│       │   └── h2v_trust.json          # Dashboard Grafana
+│       └── 📁 datasources/
+│           └── __init__.py
 │
-├── 📁 scripts/                    # Scripts utilitários
-│   ├── init_db.py                 # Inicialização do banco
-│   ├── seed_data.py               # Dados de exemplo
-│   ├── deploy_contracts.sh        # Deploy de contratos
-│   ├── generate_tree.py           # Gerador de árvore
-│   └── create_cbam_report.py      # Relatório CBAM
+├── 📁 nginx/                            # Proxy reverso
+│   ├── nginx.conf                       # Configuração Nginx
+│   └── 📁 ssl/
+│       └── .gitkeep                     # Certificados SSL
 │
-├── 📁 tests/                      # Testes automatizados
-│   ├── conftest.py                # Configuração pytest
-│   ├── test_api.py                # Testes de API
-│   ├── test_blockchain.py         # Testes blockchain
-│   ├── test_compliance.py         # Testes compliance
-│   ├── test_delegation.py         # Testes delegação
-│   ├── test_integration.py        # Testes integração
-│   └── test_oracle.py             # Testes oráculo
+├── 📁 scripts/                          # Scripts utilitários
+│   ├── __init__.py
+│   ├── init_db.py                       # Inicialização do banco
+│   ├── seed_data.py                     # Dados de exemplo
+│   ├── deploy_contracts.sh              # Deploy de contratos
+│   ├── generate_tree.py                 # Gerador de árvore
+│   ├── create_cbam_report.py            # Relatório CBAM
+│   ├── analyze_repo.py                  # Análise do repositório
+│   ├── audit_state.py                   # Auditoria de estado
+│   ├── check_imports.py                 # Verificação de imports
+│   ├── final_check.py                   # Verificação final
+│   ├── fix_imports.py                   # Correção de imports
+│   ├── scan_repo.py                     # Escaneamento do repo
+│   ├── simple_check.py                  # Verificação simples
+│   ├── start_backend_test.py            # Início de teste backend
+│   ├── test_compliance.py               # Teste de compliance
+│   ├── dump_tree.py                     # Dump da árvore
+│   └── count_stats.py                   # Estatísticas do projeto
 │
-├── 📁 docs/                       # Documentação
-│   ├── architecture.md            # Arquitetura do sistema
-│   ├── api_reference.md           # Referência da API
-│   ├── cbam_compliance.md         # Guia CBAM
-│   ├── delegation_guide.md        # Guia de delegação
-│   ├── deployment.md              # Guia de deploy
-│   └── namibia_reference.md       # Modelo Namíbia
+├── 📁 tests/                            # Testes automatizados
+│   ├── conftest.py                      # Configuração pytest
+│   ├── test_api.py                      # Testes de API
+│   ├── test_blockchain.py               # Testes blockchain
+│   ├── test_compliance.py               # Testes compliance
+│   ├── test_delegation.py               # Testes delegação
+│   ├── test_integration.py              # Testes integração
+│   ├── test_oracle.py                   # Testes oráculo
+│   └── 📁 archive/                      # Testes arquivados
+│       ├── test_account_balance.py
+│       ├── test_api_clean.py
+│       ├── test_api_detailed.py
+│       ├── test_api_route.py
+│       ├── test_api_simple.py
+│       ├── test_backend.py
+│       ├── test_batch_service.py
+│       ├── test_blockchain_connection.py
+│       ├── test_complete_flow.py
+│       ├── test_db.py
+│       ├── test_db_connection.py
+│       ├── test_delegation_import.py
+│       ├── test_direct_mock.py
+│       ├── test_e2e.py
+│       ├── test_e2e_simple.py
+│       ├── test_fix_final.py
+│       ├── test_flow.py
+│       ├── test_flow_fixed.py
+│       ├── test_import.py
+│       ├── test_minting_direct.py
+│       ├── test_minting_simple.py
+│       ├── test_model.py
+│       ├── test_model_simple.py
+│       ├── test_post.py
+│       ├── test_report_fix_simple.py
+│       ├── test_report_service.py
+│       ├── test_simple.py
+│       ├── test_simulator_connection.py
+│       ├── test_system_ascii.py
+│       ├── test_system_working.py
+│       ├── test_telemetry.py
+│       ├── test_telemetry_detailed.py
+│       ├── test_telemetry_detailed_final.py
+│       └── tmp_test_satellite.py
 │
-├── 📁 alembic/                    # Migrações de banco
-│   ├── env.py                     # Config Alembic
-│   └── 📁 versions/               # Versões de migração
+├── 📁 docs/                             # Documentação
+│   ├── architecture.md                  # Arquitetura do sistema
+│   ├── api_reference.md                 # Referência da API
+│   ├── api_proxy_guide.md               # Guia do proxy API
+│   ├── cbam_compliance.md               # Guia CBAM
+│   ├── delegation_guide.md              # Guia de delegação
+│   ├── deployment.md                    # Guia de deploy
+│   └── namibia_reference.md             # Modelo Namíbia
 │
-├── docker-compose.yml             # Orquestração Docker
-├── docker-compose.prod.yml        # Docker produção
-├── Makefile                       # Comandos make
-└── README.md                      # Documentação principal
+├── 📁 alembic/                          # Migrações de banco
+│   ├── env.py                           # Config Alembic
+│   ├── README                           # Instruções Alembic
+│   ├── script.py.mako                   # Template de migração
+│   └── 📁 versions/
+│       └── 6fef8df01c1e_init_timescaledb.py  # Migração inicial
+│
+├── 📁 logs/                             # Logs e outputs
+│   ├── audit_results.json
+│   ├── auditoria_resultado.txt
+│   ├── backend_files_nonempty.json
+│   ├── empty_files.txt
+│   ├── frontend_files.json
+│   ├── frontend_files.txt
+│   ├── frontend_files_nonempty.json
+│   ├── frontend_tree.txt
+│   ├── frontend_tree_clean.txt
+│   ├── scan_results.txt
+│   ├── tree_frontend.txt
+│   └── ... (outros logs)
+│
+├── docker-compose.yml                   # Orquestração Docker (dev)
+├── docker-compose.prod.yml              # Docker produção
+├── Makefile                             # Comandos make
+├── alembic.ini                          # Config Alembic
+├── render.yaml                          # Config Render.com
+├── .env                                 # Variáveis de ambiente
+├── .env.example                         # Exemplo de env
+├── .env.production                      # Env produção
+├── .gitignore                           # Git ignore
+├── LICENSE                              # Licença MIT
+├── README.md                            # Documentação principal
+│
+├── 📁 test-next-app/                    # App Next.js de teste
+│
+├── 📁 raiz/                             # Scripts de teste na raiz
+│   ├── test_backend_mint.py
+│   ├── test_backend_mint2.py
+│   ├── test_mint_debug.py
+│   ├── test_mint_direct.py
+│   ├── test_mint_quick.py
+│   ├── test_sbt_mint.py
+│   ├── backup_h2v_20260427.sql
+│   ├── relatorio.pdf
+│   ├── test_cbam.pdf
+│   └── ... (outros arquivos de output)
+│
+└── 📁 relatórios de auditoria/
+    ├── AUDITORIA_COMPLETA.md
+    ├── AUDITORIA_SAUDE_PROJETO.md
+    ├── RELATORIO_AUDITORIA_PRODUCAO.md
+    ├── RELATORIO_DE_TESTES_FUNCIONALIDADES.md
+    └── RELATORIO_PROJETO.md
 ```
 
 ---
@@ -202,30 +405,52 @@ h2v-trust/
 - ✅ Integrar dados IoT de sensores de produção em tempo real
 - ✅ Gerar relatórios CBAM automaticamente
 - ✅ Suportar delegação para Declarantes Delegados CBAM
+- ✅ Monitoramento por satélite (modelo Namíbia)
 
 ---
 
-## 3. FUNCIONALIDADES DETALHADAS
+## 3. ESTATÍSTICAS DO PROJETO
 
-### 3.1 🔙 Backend (FastAPI)
+| Métrica | Valor |
+|---------|-------|
+| **Total de arquivos** | **282** |
+| **Total de linhas de código** | **~19.378** |
+| **Arquivos Python** | 145 |
+| **Arquivos TypeScript/TSX** | 54 |
+| **Smart Contracts Solidity** | 14 (4 contratos + interfaces) |
+| **Arquivos JavaScript** | 13 |
+| **Documentos Markdown** | 28 |
+| **Arquivos YAML** | 6 |
+| **Arquivos CSS** | 1 |
+| **Dockerfiles** | 4 |
+| **Arquivos JSON** | 14 |
+| **Shell Scripts** | 1 |
+| **Arquivos de Configuração** | 2 |
 
-#### API REST (`backend/api/routes/`)
+---
 
-| Rota | Endpoint | Descrição |
-|------|----------|-----------|
-| **Telemetria** | `POST /api/v1/telemetry` | Ingestão de dados de sensores IoT |
-| | `GET /api/v1/telemetry/{sensor_id}` | Histórico de telemetria |
-| **Lotes** | `POST /api/v1/batches` | Criar novo lote de H₂ |
-| | `GET /api/v1/batches/{batch_id}` | Detalhes do lote |
-| | `POST /api/v1/batches/{batch_id}/certify` | Certificar lote (mint SBT) |
-| **Certificados** | `GET /api/v1/certificates` | Listar certificados |
-| | `GET /api/v1/certificates/{token_id}` | Verificar certificado |
-| | `POST /api/v1/certificates/{token_id}/consume` | Consumir certificado |
-| **Compliance** | `POST /api/v1/compliance/check` | Verificar compliance |
-| | `GET /api/v1/compliance/report/{batch_id}` | Relatório CBAM |
-| **Delegação** | `POST /api/v1/delegation/authorize` | Autorizar declarante |
-| | `GET /api/v1/delegation/status/{producer_id}` | Status delegação |
-| **Relatórios** | `GET /api/v1/reports/cbam/{batch_id}` | Relatório CBAM completo |
+## 4. FUNCIONALIDADES DETALHADAS
+
+### 4.1 🔙 Backend (FastAPI)
+
+#### API REST (`backend/api/routes/`) — Rotas Reais (Testadas)
+
+| Rota | Endpoint | Método | Descrição | Status |
+|------|----------|--------|-----------|--------|
+| **Telemetria** | `/api/v1/telemetry` | `POST` | Ingestão de dados de sensores IoT (cria lote automaticamente) | ✅ |
+| | `/api/v1/telemetry/{sensor_id}` | `GET` | Histórico de telemetria por sensor | ✅ |
+| **Lotes** | `/api/v1/batches` | `GET` | Listar lotes (filtros: `producer_id`, `compliant_only`, `skip`, `limit`) | ✅ |
+| | `/api/v1/batches/{batch_id}` | `GET` | Detalhes do lote (ex: `batch_001`) | ✅ |
+| **Certificados** | `/api/v1/certificates/{certificate_id}` | `GET` | Verificar certificado por ID (ex: `1000`) | ✅ |
+| | `/api/v1/certificates/{certificate_id}/consume` | `POST` | Consumir certificado (prevenir double counting) | ✅ |
+| **Compliance** | `/api/v1/compliance/check/{batch_id}` | `GET` | Verificar compliance CBAM de um lote | ✅ |
+| **Delegação** | `/api/v1/delegation/authorize` | `POST` | Autorizar declarante delegado CBAM | ✅ |
+| | `/api/v1/delegation/status/{producer_id}` | `GET` | Status da delegação | ✅ |
+| | `/api/v1/delegation/revoke` | `POST` | Revogar delegação | ✅ |
+| **Relatórios** | `/api/v1/reports/cbam/{year}` | `GET` | Relatório CBAM anual (ex: `2026`) | ✅ |
+| | `/api/v1/reports/cbam/{year}/download` | `GET` | Download do relatório (PDF/CSV) | ✅ |
+
+> **Nota:** Lotes são criados indiretamente via `POST /api/v1/telemetry`. Não existe `POST /api/v1/batches` nem `GET /api/v1/certificates` (lista). A certificação (mint SBT) ocorre automaticamente durante o fluxo de telemetria.
 
 #### Core de Negócio (`backend/core/`)
 
@@ -280,6 +505,7 @@ h2v-trust/
 - `web3_client.py` - Cliente Web3 para conexão com Polygon/Hardhat
 - `contract_abi.py` - ABIs dos contratos inteligentes
 - `minting.py` - Mint de Soulbound Tokens (SBT) na blockchain
+- `sbt_manager.py` - Gerenciamento de SBTs
 - `verification.py` - Verificação on-chain de certificados
 
 #### Oráculo (`backend/oracle/`)
@@ -290,6 +516,8 @@ h2v-trust/
   - `get_renewable_energy_production()` - Verificação de energia renovável
   - `verify_additionality()` - Verificação de adicionalidade via satélite
 - `automation.py` - Automação de tarefas periódicas
+- `chainlink_client.py` - Integração com Chainlink Oracle
+- `sensor_aggregator.py` - Agregação de dados de sensores
 
 #### Banco de Dados (`backend/db/`)
 
@@ -299,7 +527,7 @@ h2v-trust/
 
 ---
 
-### 3.2 ⛓️ Smart Contracts (Solidity)
+### 4.2 ⛓️ Smart Contracts (Solidity)
 
 #### GreenHydrogenSBT.sol
 - **Token Soulbound (não-transferível)** baseado em ERC-721
@@ -322,7 +550,7 @@ h2v-trust/
 
 ---
 
-### 3.3 🎨 Frontend (Next.js 14 + TypeScript)
+### 4.3 🎨 Frontend (Next.js 14 + TypeScript)
 
 #### Páginas Principais
 
@@ -344,14 +572,46 @@ h2v-trust/
 - Verificação individual por batchId
 
 **Portal do Produtor (`/producer`)**
-- Gerenciamento de lotes de produção
-- Visualização de telemetria dos sensores
 
-#### Componentes
+O Portal do Produtor é composto por **4 páginas** com funcionalidades completas:
 
-- **UI (shadcn)**: button, card, badge, dialog, dropdown-menu, input, label, progress, table, tabs
-- **Shared**: ErrorBoundary, LoadingSpinner, QRCode
-- **Layout**: Navbar com navegação entre portais
+#### Página Principal (`/producer/page.tsx`) - Painel do Produtor
+- **Métricas principais** (4 cards):
+  - **Produção Total** (kg de H₂ verde produzido)
+  - **Taxa de Conformidade** (% de lotes conformes com tendência)
+  - **Média Emissões GHG** (kgCO₂e/kgH₂ com indicador vs limite CBAM)
+  - **Certificados Emitidos** (total de SBTs emitidos)
+- **Gráfico de Tendência Mensal**: LineChart com emissões GHG, consumo de água e taxa de conformidade ao longo dos meses
+- **Visão Geral dos Lotes**: Distribuição por status (Verificados, Pendentes, Atenção, Certificados)
+- **Ações Rápidas**:
+  - **Gerar Relatório CBAM** → Download de PDF oficial de certificação
+  - **Exportar Dados** → Download de CSV com dados de telemetria
+- **Tabela de Lotes Recentes**: Lista com ID, tamanho, emissões GHG, consumo de água, status (Verificado/Pendente/Atenção), pontuação (0-100) e ações (baixar certificado SBT, corrigir não-conformidades)
+- **Modal de Novo Lote**: Formulário para registrar novo lote com campos de tamanho (kg), emissões GHG e consumo de água
+- **Botão "Enviar Dados"**: Upload manual de dados de telemetria
+- **Dicas de Conformidade**: Seção educativa com recomendações para reduzir emissões GHG e melhorar eficiência hídrica
+- **Fallback para dados mock**: Funciona offline com dados de demonstração
+
+#### Gerenciamento de Lotes (`/producer/batches/page.tsx`)
+- **Lista completa de lotes** com paginação (até 50 lotes)
+- **Barra de pesquisa**: Filtro por ID do lote ou produtor
+- **Resumo estatístico**: Total de lotes, conformes e pendentes
+- **Tabela detalhada**: ID, tamanho, emissões GHG, consumo de água, status (Verificado/Pendente), data de criação
+- **Ações por lote**: Link para verificação detalhada, download de certificado
+- **Botão "Novo Lote"**: Criação de novos lotes
+- **Loading state**: Spinner durante carregamento
+- **Error state**: Mensagem de erro quando API falha
+
+#### Certificados (`/producer/certificates/page.tsx`)
+- Página estrutural para gerenciamento de certificados de hidrogênio verde
+- *(Em desenvolvimento - página placeholder)*
+
+#### Delegação CBAM (`/producer/delegation/page.tsx`)
+- Página estrutural para gerenciamento de delegações de certificação
+- *(Em desenvolvimento - página placeholder)*
+
+#### Componentes UI (shadcn)
+- badge, button, card, dialog, dropdown-menu, input, label, progress, table, tabs
 
 #### Hooks React
 - `useBatch()` - Gerenciamento de lotes
@@ -360,7 +620,7 @@ h2v-trust/
 
 ---
 
-### 3.4 📡 IoT Simulator
+### 4.4 📡 IoT Simulator
 
 **`iot/simulator.py`**
 - Simula sensores de produção de H₂ verde
@@ -371,7 +631,7 @@ h2v-trust/
 
 ---
 
-### 3.5 📊 Monitoramento
+### 4.5 📊 Monitoramento
 
 - **Prometheus** (`monitoring/prometheus.yml`) - Coleta de métricas
 - **Grafana** (`monitoring/grafana/`) - Dashboards visuais
@@ -380,20 +640,24 @@ h2v-trust/
 
 ---
 
-### 3.6 🧪 Testes
+### 4.6 🧪 Testes
 
 | Arquivo | Escopo |
 |---------|--------|
-| `test_api.py` | Testes de endpoints REST |
-| `test_blockchain.py` | Testes de integração blockchain |
-| `test_compliance.py` | Testes de verificação CBAM |
-| `test_delegation.py` | Testes de delegação |
-| `test_integration.py` | Testes de integração geral |
-| `test_oracle.py` | Testes do oráculo/satélite |
+| `tests/test_api.py` | Testes de endpoints REST |
+| `tests/test_blockchain.py` | Testes de integração blockchain |
+| `tests/test_compliance.py` | Testes de verificação CBAM |
+| `tests/test_delegation.py` | Testes de delegação |
+| `tests/test_integration.py` | Testes de integração geral |
+| `tests/test_oracle.py` | Testes do oráculo/satélite |
+| `contracts/test/GreenHydrogenSBT.test.js` | Testes do contrato SBT |
+| `contracts/test/BatchRegistry.test.js` | Testes do BatchRegistry |
+| `contracts/test/ComplianceVerifier.test.js` | Testes do ComplianceVerifier |
+| `contracts/test/integration.test.js` | Testes de integração dos contratos |
 
 ---
 
-## 4. FLUXO DE TRABALHO COMPLETO
+## 5. FLUXO DE TRABALHO COMPLETO
 
 ### 🔄 Produção → Certificação → Exportação
 
@@ -425,8 +689,8 @@ SENSORES IoT
     ▼         ▼
 ┌────────┐  ┌──────────────┐
 │ Mint   │  │ Relatório de │
-│ SBT    │  │ Não-Conform. │
-└───┬────┘  └──────────────┘
+│ SBT na Blockchain │
+└───┬────┘
     │
     ▼
 ┌─────────────────┐
@@ -444,7 +708,7 @@ SENSORES IoT
 
 ---
 
-## 5. TECNOLOGIAS UTILIZADAS
+## 6. TECNOLOGIAS UTILIZADAS
 
 | Tecnologia | Versão | Uso |
 |------------|--------|-----|
@@ -464,10 +728,13 @@ SENSORES IoT
 | **Tailwind CSS** | - | Estilização |
 | **Alembic** | - | Migrações BD |
 | **Pytest** | - | Testes Python |
+| **Web3.py** | - | Integração blockchain |
+| **SQLAlchemy** | - | ORM |
+| **Pydantic** | - | Validação de dados |
 
 ---
 
-## 6. CONFORMIDADE CBAM 2026
+## 7. CONFORMIDADE CBAM 2026
 
 ### Requisitos Atendidos
 
@@ -484,7 +751,7 @@ SENSORES IoT
 
 ---
 
-## 7. ESTRUTURA DE DADOS
+## 8. ESTRUTURA DE DADOS
 
 ### Telemetria (IoT)
 ```json
@@ -518,7 +785,7 @@ struct CertificateData {
 
 ---
 
-## 8. PRÓXIMOS PASSOS (ROADMAP)
+## 9. PRÓXIMOS PASSOS (ROADMAP)
 
 ### Fase 1 - MVP (✅ Concluído)
 - [x] Estrutura do projeto
@@ -542,132 +809,83 @@ struct CertificateData {
 
 ---
 
-## 9. COMANDOS PARA RODAR O PROJETO NO TERMINAL
+## 10. COMANDOS PARA RODAR O PROJETO
 
 ### 🚀 Opção 1: Docker (Tudo de uma vez - Recomendado)
 
 ```bash
-# 1. Subir todos os serviços (backend, frontend, banco, blockchain)
+# Subir todos os serviços
 docker-compose up -d
 
-# 2. Verificar se tudo está rodando
+# Verificar status
 docker-compose ps
 
-# 3. Ver logs em tempo real
+# Ver logs
 docker-compose logs -f
 
-# 4. Parar tudo
+# Parar tudo
 docker-compose down
 
 # Acessar:
 # - Frontend: http://localhost:3000
 # - Backend:  http://localhost:8000
 # - API Docs: http://localhost:8000/docs
-# - Hardhat:  http://localhost:8545
 ```
 
----
+### 🚀 Opção 2: Desenvolvimento Local
 
-### 🚀 Opção 2: Desenvolvimento Local (Passo a Passo)
-
-#### Terminal 1 - Banco de Dados (TimescaleDB + Redis)
+#### Terminal 1 - Banco de Dados
 ```bash
-# Iniciar TimescaleDB
-docker run -d --name h2v_timescaledb -p 5432:5432 ^
-  -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password ^
-  -e POSTGRES_DB=h2v_trust ^
+docker run -d --name h2v_timescaledb -p 5432:5432 \
+  -e POSTGRES_USER=user -e POSTGRES_PASSWORD=password \
+  -e POSTGRES_DB=h2v_trust \
   timescale/timescaledb:latest-pg16
 
-# Iniciar Redis (cache)
 docker run -d --name h2v_redis -p 6379:6379 redis:7-alpine
 ```
 
-#### Terminal 2 - Backend (FastAPI)
+#### Terminal 2 - Backend
 ```bash
-# Navegar para o diretório do backend
-cd c:\Source\Repos\h2v-trust\backend
-
-# Criar ambiente virtual (primeira vez)
+cd backend
 python -m venv venv
-
-# Ativar ambiente virtual
 venv\Scripts\activate
-
-# Instalar dependências (primeira vez)
 pip install -r requirements.txt
-
-# Inicializar banco de dados (primeira vez)
 python ..\scripts\init_db.py
-
-# Rodar servidor de desenvolvimento
 uvicorn main:app --reload --host 0.0.0.0 --port 8000
-
-# API disponível em: http://localhost:8000
-# Documentação: http://localhost:8000/docs
 ```
 
-#### Terminal 3 - Smart Contracts (Blockchain)
+#### Terminal 3 - Smart Contracts
 ```bash
-# Navegar para o diretório de contratos
-cd c:\Source\Repos\h2v-trust\contracts
-
-# Instalar dependências (primeira vez)
+cd contracts
 npm install
-
-# Iniciar nó Hardhat local (blockchain de desenvolvimento)
 npx hardhat node
-
-# Nó rodando em: http://localhost:8545
 ```
 
-#### Terminal 4 - Deploy dos Contratos (após nó Hardhat estar rodando)
+#### Terminal 4 - Deploy dos Contratos
 ```bash
-# Em outro terminal, com o nó Hardhat rodando:
-cd c:\Source\Repos\h2v-trust\contracts
-
-# Fazer deploy dos contratos
+cd contracts
 npx hardhat run scripts/deploy.js --network localhost
-
-# (Alternativa via script shell)
-# .\scripts\deploy_contracts.sh
 ```
 
-#### Terminal 5 - Frontend (Next.js)
+#### Terminal 5 - Frontend
 ```bash
-# Navegar para o diretório do frontend
-cd c:\Source\Repos\h2v-trust\frontend
-
-# Instalar dependências (primeira vez)
+cd frontend
 npm install
-
-# Rodar servidor de desenvolvimento
 npm run dev
-
-# Frontend disponível em: http://localhost:3000
 ```
 
 #### Terminal 6 - Simulador IoT (Opcional)
 ```bash
-# Navegar para o diretório IoT
-cd c:\Source\Repos\h2v-trust\iot
-
-# Instalar dependências (primeira vez)
+cd iot
 pip install httpx pyyaml
-
-# Rodar simulador de sensores
 python simulator.py
-
-# O simulador envia dados de telemetria para a API automaticamente
 ```
 
----
-
-### 🧪 Comandos de Teste
+### 🧪 Testes
 
 ```bash
-# Testes do Backend
-cd c:\Source\Repos\h2v-trust\backend
-pytest tests/ -v
+# Backend
+cd backend && pytest tests/ -v
 
 # Testes específicos
 pytest tests/test_compliance.py -v
@@ -677,53 +895,12 @@ pytest tests/test_delegation.py -v
 pytest tests/test_integration.py -v
 pytest tests/test_oracle.py -v
 
-# Testes dos Smart Contracts
-cd c:\Source\Repos\h2v-trust\contracts
-npx hardhat test
+# Smart Contracts
+cd contracts && npx hardhat test
 
-# Testes do Frontend
-cd c:\Source\Repos\h2v-trust\frontend
-npm test
+# Frontend
+cd frontend && npm test
 ```
-
----
-
-### 📋 Comandos Úteis
-
-```bash
-# Verificar versões
-python --version
-node --version
-npm --version
-docker --version
-
-# Verificar containers rodando
-docker ps
-
-# Parar container específico
-docker stop h2v_timescaledb
-
-# Remover container
-docker rm h2v_timescaledb
-
-# Ver logs do backend
-docker logs h2v-trust-backend -f
-
-# Acessar banco de dados via CLI
-docker exec -it h2v_timescaledb psql -U user -d h2v_trust
-
-# Recriar banco de dados do zero
-cd c:\Source\Repos\h2v-trust
-python scripts\init_db.py
-
-# Popular com dados de exemplo
-python scripts\seed_data.py
-
-# Gerar relatório CBAM de teste
-python scripts\create_cbam_report.py
-```
-
----
 
 ### 🔄 Ordem de inicialização recomendada
 
@@ -736,39 +913,26 @@ python scripts\create_cbam_report.py
 6º → Simulador IoT (opcional)
 ```
 
-### ✅ Verificação rápida de tudo funcionando
+---
 
-```bash
-# Testar health check do backend
-curl http://localhost:8000/health
+## 11. ARQUIVOS DE RELATÓRIO E AUDITORIA
 
-# Resposta esperada:
-# {"status": "ok", "service": "H2V-Trust"}
-
-# Testar documentação da API
-start http://localhost:8000/docs
-
-# Testar frontend
-start http://localhost:3000
-```
+| Arquivo | Descrição |
+|---------|-----------|
+| `RELATORIO_PROJETO.md` | 📋 Este relatório - visão completa do projeto |
+| `AUDITORIA_COMPLETA.md` | 🔍 Auditoria completa de código e arquitetura |
+| `AUDITORIA_SAUDE_PROJETO.md` | 🏥 Auditoria de saúde do projeto |
+| `RELATORIO_AUDITORIA_PRODUCAO.md` | ⚙️ Auditoria para produção/deploy |
+| `RELATORIO_DE_TESTES_FUNCIONALIDADES.md` | 🧪 Relatório de testes de funcionalidades |
+| `docs/architecture.md` | 🏗️ Documentação de arquitetura |
+| `docs/api_reference.md` | 📖 Referência completa da API |
+| `docs/cbam_compliance.md` | 📜 Guia de conformidade CBAM |
+| `docs/delegation_guide.md` | 🤝 Guia de delegação CBAM |
+| `docs/deployment.md` | 🚀 Guia de deploy |
+| `docs/namibia_reference.md` | 🌍 Modelo de monitoramento Namíbia |
 
 ---
 
-## 10. ESTATÍSTICAS DO PROJETO
-
-| Item | Quantidade |
-|------|------------|
-| Arquivos Python | ~40 |
-| Arquivos TypeScript/TSX | ~30 |
-| Smart Contracts Solidity | 7 (4 contratos + 3 interfaces) |
-| Testes | 7 suites |
-| Documentos | 8+ |
-| Scripts utilitários | 12 |
-| Componentes UI | 10 (shadcn) |
-| Endpoints API | 12+ |
-| Dockerfiles | 3 |
-
----
-
-*Relatório gerado em 24/04/2026*
+*Relatório gerado em 27/04/2026*
 *H2V-Trust - Plataforma de Rastreabilidade Blockchain para Hidrogênio Verde*
+*Total: ~19.378 linhas de código em 282 arquivos*

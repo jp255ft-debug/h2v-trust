@@ -14,6 +14,7 @@ class Batch(Base):
     __tablename__ = "batches"
     
     id = Column(String(36), primary_key=True, index=True)
+    tenant_id = Column(String(100), nullable=False, index=True, default="default")
     telemetry_id = Column(Integer, ForeignKey("telemetry_records.id"), nullable=True)
     producer_wallet = Column(String(100), nullable=True, index=True)
     producer_id = Column(String(100), nullable=True, index=True)

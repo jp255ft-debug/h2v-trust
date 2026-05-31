@@ -47,7 +47,9 @@ export const API_ENDPOINTS = {
   TELEMETRY: `${API_PREFIX}/telemetry`,
   BATCHES: `${API_PREFIX}/batches`,
   BATCH: (id: string) => `${API_PREFIX}/batches/${id}`,
+  BATCH_CERTIFY: (id: string) => `${API_PREFIX}/batches/${id}/certify`,
   BATCH_COMPLIANCE: (id: string) => `${API_PREFIX}/batches/${id}/compliance`,
+
   CERTIFICATES: `${API_PREFIX}/certificates`,
   CERTIFICATE: (id: string) => `${API_PREFIX}/certificates/${id}`,
   CERTIFICATE_CONSUME: (id: string) => `${API_PREFIX}/certificates/${id}/consume`,

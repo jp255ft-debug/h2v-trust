@@ -6,6 +6,9 @@ from .batch import Batch
 from .certificate import Certificate
 from .audit_log import AuditLog
 from .delegation import Delegation
+from .tenant import Tenant
+from .user import User
+from .user_tenant import UserTenant
 
 __all__ = [
     "TelemetryRecord",
@@ -13,4 +16,7 @@ __all__ = [
     "Certificate",
     "AuditLog",
     "Delegation",
+    "Tenant",
+    "User",
+    "UserTenant",
 ]

@@ -2,17 +2,12 @@ const path = require('path');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: 'standalone',
   reactStrictMode: true,
-  // Configuração para produção com domínio personalizado
-  async rewrites() {
-    const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
-    return [
-      {
-        source: '/api/:path*',
-        destination: `${apiUrl}/api/v1/:path*`,
-      },
-    ];
-  },
+  // NOTA: O proxy da API é feito via route.ts em app/api/[...path]/route.ts
+  // que suporta blobs binários (PDF, CSV) e passa headers corretamente.
+  // O rewrites() foi removido porque entra em conflito com o route.ts
+  // e causa duplicação do prefixo /api/v1/ na URL de destino.
   images: {
     domains: ['localhost', 'h2vtrust.com.br', 'www.h2vtrust.com.br', 'h2v-trust-api.onrender.com'],
   },

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   timescaledb:
     image: timescale/timescaledb:latest-pg16
@@ -30,7 +28,7 @@ services:
       retries: 5
 
   hardhat:
-    image: node:18-alpine
+    image: node:20-alpine
     container_name: h2v_hardhat
     working_dir: /app
     volumes:
@@ -38,6 +36,12 @@ services:
     command: sh -c "npm install && npx hardhat node --hostname 0.0.0.0"
     ports:
       - "8545:8545"
+    healthcheck:
+      test: ["CMD", "node", "-e", "const http=require('http');const req=http.request({hostname:'127.0.0.1',port:8545,path:'/',method:'POST',headers:{'Content-Type':'application/json'}},r=>{let d='';r.on('data',c=>d+=c);r.on('end',()=>{try{const j=JSON.parse(d);process.exit(j.result?0:1)}catch(e){process.exit(1)}})});req.on('error',()=>process.exit(1));req.end('{\"jsonrpc\":\"2.0\",\"method\":\"eth_blockNumber\",\"params\":[],\"id\":1}')"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 120s
 
   backend:
     build:
@@ -48,14 +52,14 @@ services:
       DATABASE_URL: postgresql://h2v_user:h2v_password@timescaledb:5432/h2v_trust
       REDIS_URL: redis://redis:6379
       POLYGON_RPC_URL: http://hardhat:8545
-      CONTRACT_ADDRESS: 0xa513E6E4b8f2a923D98304ec87F64353C4D5C853
-      PRIVATE_KEY: 0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80
+      CONTRACT_ADDRESS: 0x0165878A594ca255338adfa4d48449f69242Eb8F
+      BATCH_REGISTRY_ADDRESS: 0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9
+      COMPLIANCE_VERIFIER_ADDRESS: 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9
+      DELEGATION_MANAGER_ADDRESS: 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707
+      GREEN_HYDROGEN_SBT_ADDRESS: 0x0165878A594ca255338adfa4d48449f69242Eb8F
+      PRIVATE_KEY: ${PRIVATE_KEY:-0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80}
       MOCK_MODE: false
-      SECRET_KEY: test-secret-key-for-local-development-12345
-      BATCH_REGISTRY_ADDRESS: 0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9
-      COMPLIANCE_VERIFIER_ADDRESS: 0x5FC8d32690cc91D4c39d9d3abcBD16989F875707
-      DELEGATION_MANAGER_ADDRESS: 0x0165878A594ca255338adfa4d48449f69242Eb8F
-      GREEN_HYDROGEN_SBT_ADDRESS: 0xa513E6E4b8f2a923D98304ec87F64353C4D5C853
+      SECRET_KEY: ${SECRET_KEY:-test-secret-key-for-local-development-12345}
     ports:
       - "8000:8000"
     depends_on:
@@ -64,7 +68,8 @@ services:
       redis:
         condition: service_healthy
       hardhat:
-        condition: service_started
+        condition: service_healthy
+
     volumes:
       - ./backend:/app
     command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
@@ -74,12 +79,19 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     container_name: h2v_frontend
-    environment:
-      NEXT_PUBLIC_API_URL: http://backend:8000
+    env_file:
+      - ./frontend/.env.local
+
     ports:
       - "3000:3000"
     depends_on:
       - backend
+    healthcheck:
+      test: ["CMD", "node", "-e", "const http=require('http');const req=http.get('http://localhost:3000',r=>{process.exit(r.statusCode===200?0:1)});req.on('error',()=>process.exit(1))"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+      start_period: 60s
     volumes:
       - ./frontend:/app
       - /app/node_modules

@@ -1,0 +1,76 @@
+{
+    "frontend": {
+        "total_files": 306,
+        "empty_files": 36,
+        "total_size": 3461938,
+        "empty_files_list": [
+            "\\app\\api\\[...path]\\route.ts",
+            "\\app\\auditor\\components\\BatchVerification.tsx",
+            "\\app\\auditor\\components\\BlockchainProof.tsx",
+            "\\app\\auditor\\components\\ComplianceReport.tsx",
+            "\\app\\auditor\\verify\\[batchId]\\page.tsx",
+            "\\app\\dashboard\\components\\CertificatesTable.tsx",
+            "\\app\\dashboard\\components\\EmissionsGauge.tsx",
+            "\\app\\dashboard\\components\\ProductionChart.tsx",
+            "\\app\\dashboard\\components\\WaterCompliance.tsx",
+            "\\app\\producer\\batches\\page.tsx",
+            "\\app\\producer\\certificates\\page.tsx",
+            "\\app\\producer\\delegation\\page.tsx",
+            "\\public\\favicon.ico",
+            "\\public\\logo.svg",
+            "\\src\\components\\layout\\Footer.tsx",
+            "\\src\\components\\layout\\Header.tsx",
+            "\\src\\components\\layout\\Sidebar.tsx",
+            "\\src\\components\\shared\\ErrorBoundary.tsx",
+            "\\src\\components\\shared\\LoadingSpinner.tsx",
+            "\\src\\components\\shared\\QRCode.tsx",
+            "\\src\\components\\ui\\dialog.tsx",
+            "\\src\\hooks\\useBatch.ts",
+            "\\src\\hooks\\useCertificate.ts",
+            "\\src\\hooks\\useCompliance.ts",
+            "\\src\\lib\\web3.ts",
+            "\\src\\types\\batch.ts",
+            "\\src\\types\\certificate.ts",
+            "\\src\\types\\compliance.ts",
+            "\\venv\\lib\\python3.12\\site-packages\\pip\\_internal\\operations\\__init__.py",
+            "\\venv\\lib\\python3.12\\site-packages\\pip\\_internal\\operations\\build\\__init__.py",
+            "\\venv\\lib\\python3.12\\site-packages\\pip\\_internal\\resolution\\__init__.py",
+            "\\venv\\lib\\python3.12\\site-packages\\pip\\_internal\\resolution\\legacy\\__init__.py",
+            "\\venv\\lib\\python3.12\\site-packages\\pip\\_internal\\resolution\\resolvelib\\__init__.py",
+            "\\venv\\lib\\python3.12\\site-packages\\pip\\_internal\\utils\\__init__.py",
+            "\\venv\\lib\\python3.12\\site-packages\\pip\\_vendor\\chardet\\cli\\__init__.py",
+            "\\venv\\lib\\python3.12\\site-packages\\pip\\_vendor\\chardet\\metadata\\__init__.py"
+        ]
+    },
+    "backend": {
+        "total_files": 65,
+        "empty_files": 7,
+        "total_size": 156089,
+        "empty_files_list": [
+            "\\blockchain\\contract_abi.py",
+            "\\models\\batch.py",
+            "\\models\\certificate.py",
+            "\\models\\compliance.py",
+            "\\models\\delegation.py",
+            "\\oracle\\automation.py",
+            "\\oracle\\satellite_monitor.py"
+        ]
+    },
+    "contracts": {
+        "total_files": 79,
+        "empty_files": 10,
+        "total_size": 6780928,
+        "empty_files_list": [
+            "\\.env.example",
+            "\\contracts\\interfaces\\IBatchRegistry.sol",
+            "\\contracts\\interfaces\\IDelegationManager.sol",
+            "\\contracts\\interfaces\\IGreenHydrogenSBT.sol",
+            "\\scripts\\upgrade.js",
+            "\\scripts\\verify.js",
+            "\\test\\BatchRegistry.test.js",
+            "\\test\\ComplianceVerifier.test.js",
+            "\\test\\GreenHydrogenSBT.test.js",
+            "\\test\\integration.test.js"
+        ]
+    }
+}

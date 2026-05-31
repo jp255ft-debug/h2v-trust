@@ -13,6 +13,7 @@ class Delegation(Base):
     __tablename__ = "delegations"
     
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
+    tenant_id = Column(String(100), nullable=False, index=True, default="default")
     delegation_id = Column(String(100), unique=True, nullable=False, index=True)
     producer_id = Column(String(100), nullable=False, index=True)
     producer_wallet = Column(String(100), nullable=True)

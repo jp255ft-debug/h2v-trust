@@ -3,8 +3,8 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import Response
 from sqlalchemy.orm import Session
 
-from api.dependencies.auth import verify_api_key
 from api.dependencies.db import get_db
+from api.dependencies.tenant import get_tenant_id
 from services.report_service import ReportService
 
 logger = logging.getLogger(__name__)
@@ -16,7 +16,7 @@ async def get_cbam_annual_report(
     year: int,
     producer_id: str = Query(None),
     db: Session = Depends(get_db),
-    api_key: str = Depends(verify_api_key),
+    tenant_id: str = Depends(get_tenant_id),
 ):
     service = ReportService(db)
     report = await service.generate_cbam_report(year, producer_id)
@@ -31,7 +31,7 @@ async def download_cbam_report(
     format: str = "json",  # json, csv, pdf
     producer_id: str = Query(None),
     db: Session = Depends(get_db),
-    api_key: str = Depends(verify_api_key),
+    tenant_id: str = Depends(get_tenant_id),
 ):
     service = ReportService(db)
     if format == "json":

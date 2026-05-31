@@ -1,1 +1,0 @@
-{"detail":[{"type":"missing","loc":["header","X-API-Key"],"msg":"Field required","input":null},{"type":"int_parsing","loc":["path","year"],"msg":"Input should be a valid integer, unable to parse string as an integer","input":"batch-001"}]}

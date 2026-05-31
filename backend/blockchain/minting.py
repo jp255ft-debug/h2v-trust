@@ -41,7 +41,7 @@ def extract_token_id_from_receipt(tx_receipt, contract_address):
         # Verificar se é do nosso contrato e se é evento Transfer
         if (log_address and log_address.lower() == contract_address.lower() and 
             len(topics) >= 4 and 
-            topics[0].hex() if hasattr(topics[0], 'hex') else str(topics[0]) == transfer_event_hash):
+            (topics[0].hex() if hasattr(topics[0], 'hex') else str(topics[0])) == transfer_event_hash):
             
             # tokenId está no topic[3] (uint256 indexed)
             token_id_topic = topics[3]
@@ -94,10 +94,19 @@ async def mint_certificate_on_chain(
     Returns:
         Tuple of (transaction_hash, token_id)
     """
-    w3 = get_w3()
-    contract = get_contract()
-    account = w3.eth.account.from_key(settings.PRIVATE_KEY)
-    nonce = w3.eth.get_transaction_count(account.address)
+    try:
+        w3 = get_w3()
+        contract = get_contract()
+    except (ConnectionError, TimeoutError, Exception) as e:
+        logger.error(f"Blockchain connection failed for minting batch {batch_id}: {e}")
+        raise ConnectionError(f"Cannot connect to blockchain for minting certificate: {e}") from e
+    
+    try:
+        account = w3.eth.account.from_key(settings.PRIVATE_KEY)
+        nonce = w3.eth.get_transaction_count(account.address)
+    except Exception as e:
+        logger.error(f"Failed to get account or nonce for minting batch {batch_id}: {e}")
+        raise ConnectionError(f"Blockchain account error during minting: {e}") from e
     
     # Converter batch_id para bytes32 (hexadecimal)
     if batch_id.startswith('0x'):
@@ -161,15 +170,23 @@ async def mint_certificate_on_chain(
         'gasPrice': w3.eth.gas_price
     })
     
-    signed_tx = account.sign_transaction(tx)
-    raw_tx = signed_tx.raw_transaction
-    tx_hash = w3.eth.send_raw_transaction(raw_tx)
+    try:
+        signed_tx = account.sign_transaction(tx)
+        raw_tx = signed_tx.raw_transaction
+        tx_hash = w3.eth.send_raw_transaction(raw_tx)
+    except (ConnectionError, TimeoutError, Exception) as e:
+        logger.error(f"Failed to send raw transaction for batch {batch_id}: {e}")
+        raise ConnectionError(f"Blockchain send transaction failed: {e}") from e
     
     # wait_for_transaction_receipt é síncrono e bloqueia o event loop
     # Executar em thread separada para não travar o FastAPI
-    receipt = await asyncio.to_thread(
-        w3.eth.wait_for_transaction_receipt, tx_hash, timeout=120
-    )
+    try:
+        receipt = await asyncio.to_thread(
+            w3.eth.wait_for_transaction_receipt, tx_hash, timeout=120
+        )
+    except (ConnectionError, TimeoutError, Exception) as e:
+        logger.error(f"Failed to get transaction receipt for batch {batch_id}: {e}")
+        raise ConnectionError(f"Blockchain receipt timeout/failure: {e}") from e
     
     if receipt.status == 0:
         logger.error("Transaction reverted on-chain")
