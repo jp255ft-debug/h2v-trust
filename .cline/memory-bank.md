@@ -1,16 +1,19 @@
 # H2V-Trust Memory Bank
 
-## Contexto Ativo (2026-05-28)
+## Contexto Ativo (2026-05-31)
 
-- **Fase Atual**: Correção de erros de compilação do frontend (GOVBR-DS) + Correção de import do web3.py no backend + Correção do proxy (duplex).
-- **Últimas Ações**: 
-  - Corrigido `BrHeaderWrapper.tsx` — prop `dark` → `dark={true}`
-  - Corrigido `VlibrasWrapper.tsx` — mapeamento correto do export default
-  - Substituído `BrSignInWrapper.tsx` — `BrSignIn` não existe na biblioteca GOVBR-DS, substituído por formulário Tailwind funcional com integração JWT
-  - Frontend compilado com sucesso: `✓ Compiled / in 16.5s (586 modules)`, `✓ Compiled /login in 1072ms (543 modules)`
-  - Corrigido `backend/blockchain/web3_client.py` — `ExtraDataToPOAMiddleware` renomeado para `geth_poa_middleware` no web3.py >= 7.x
-  - Corrigido `frontend/app/api/[...path]/route.ts` — adicionado `duplex: 'half'` no fetch do proxy para compatibilidade com Node.js >= 18
-  - Login via proxy do frontend testado com sucesso: JWT token retornado ✅
+- **Fase Atual**: Preparação para open source (licenciamento AGPLv3, blindagem de segredos, documentação da comunidade, candidatura a grants)
+- **Últimas Ações**:
+  - Migração de licença MIT → AGPLv3 (LICENSE, package.json, frontend/package.json)
+  - Adicionado pipeline de segurança (`.github/workflows/security-audit.yml`) com Gitleaks + CodeQL + auditoria de dependências
+  - Criado `.gitleaks.toml` com regras personalizadas para chaves Hardhat e secrets de teste
+  - Criado `CONTRIBUTING.md` — guia completo para contribuidores
+  - Criado `CODE_OF_CONDUCT.md` — código de conduta (Contributor Covenant v2.1)
+  - Criado `CHANGELOG.md` — histórico de versões (v0.8.0 → v1.0.0)
+  - Criado `SECURITY.md` — política de segurança com canais de reporte
+  - Atualizado `README.md` — badges de licença AGPLv3, seção de contribuição e segurança
+  - Criado `docs/polygon_grant_proposal.md` — proposta de grant de 50,000 POL tokens
+  - Commit: `d35ab2b` — 12 arquivos alterados, 1679 linhas adicionadas
 - **Problemas Conhecidos**: Bug fantasma do Docker (#253) — ver `.clinerules/01-docker.md` para protocolo de emergência.
 - **Credenciais de Teste**:
   | Usuário | Email | Senha | Role |
@@ -20,9 +23,7 @@
   | Auditor | auditor@h2v-trust.com | H2v@Trust!2026 | auditor |
 - **Comandos Chave**: `make dev-start`, `make dev-check`, `make dev-reset`.
 
-## Estado Atual (2026-05-28)
-
-### Ambiente
+## Ambiente
 - **Status:** Rodando via Docker Compose (modo dev)
 - **Containers:** 5 serviços (timescaledb, redis, hardhat, backend, frontend) — todos `Up` e `healthy`
 - **Backend:** FastAPI na porta 8000 - Health check: todos os sistemas OK
