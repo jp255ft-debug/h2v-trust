@@ -147,6 +147,9 @@ checksum.txt
 # Generated files
 backend/pip_freeze.txt
 
+# Gitleaks report
+gitleaks-report.json
+
 # Production environment (secrets)
 .env.production
 

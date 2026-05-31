@@ -10,7 +10,7 @@
 ![FastAPI](https://img.shields.io/badge/fastapi-0.115-009688?style=for-the-badge&logo=fastapi&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/typescript-5-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
 ![Docker](https://img.shields.io/badge/docker-ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)
-![License](https://img.shields.io/badge/license-MIT-brightgreen?style=for-the-badge)
+![License](https://img.shields.io/badge/license-AGPL--3.0-blue?style=for-the-badge)
 ![CBAM](https://img.shields.io/badge/CBAM-2026%20Compliant-red?style=for-the-badge)
 ![Blockchain](https://img.shields.io/badge/blockchain-Polygon-8247E5?style=for-the-badge&logo=polygon&logoColor=white)
 ![Tests](https://img.shields.io/badge/tests-96.8%25%20passing-success?style=for-the-badge)
@@ -243,21 +243,26 @@ npm test
 - [ ] Análise preditiva de emissões
 - [ ] Certificação multi-jurisdicional
 
-## Contribuição
-1. Fork o repositório
-2. Crie uma branch (`git checkout -b feature/nova-funcionalidade`)
-3. Commit suas mudanças (`git commit -am 'Adiciona nova funcionalidade'`)
-4. Push para a branch (`git push origin feature/nova-funcionalidade`)
-5. Crie um Pull Request
+## 🤝 Como Contribuir
+Leia o nosso [Guia de Contribuição](CONTRIBUTING.md) e o [Código de Conduta](CODE_OF_CONDUCT.md) para saber como contribuir com o projeto.
 
-## Licença
-MIT License - veja o arquivo LICENSE para detalhes.
+## 📄 Licença
+Este projeto está licenciado sob a **GNU Affero General Public License v3.0** — veja o arquivo [LICENSE](LICENSE) para detalhes.
+
+A AGPLv3 garante que:
+- ✅ O código permaneça livre e aberto para toda a comunidade
+- ✅ Modificações em versões que rodam como serviço de rede sejam compartilhadas
+- ✅ Grandes corporações não possam usar o código em produtos proprietários sem contribuir de volta
+
+## 🔒 Segurança
+Leia a nossa [Política de Segurança](SECURITY.md) para reportar vulnerabilidades de forma responsável.
 
 ## Contato
 - **Equipe:** H2V-Trust Development Team
 - **Email:** dev@h2v-trust.com
 - **Website:** https://h2v-trust.com
 - **Documentação:** [docs.h2v-trust.com](https://docs.h2v-trust.com)
+- **GitHub:** [github.com/jp255ft-debug/h2v-trust](https://github.com/jp255ft-debug/h2v-trust)
 
 ## Referências
 1. Regulamento CBAM 2026 - UE

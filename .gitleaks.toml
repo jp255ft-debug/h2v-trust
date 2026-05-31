@@ -1,0 +1,62 @@
+# Gitleaks Configuration for H2V-Trust
+# This file defines custom rules and allowlists for secret detection.
+
+title = "H2V-Trust Gitleaks Configuration"
+
+[extend]
+useDefault = true
+
+# Custom rules specific to H2V-Trust
+[[rules]]
+id = "h2v-hardhat-private-key"
+description = "Hardhat development private key"
+regex = '''0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80'''
+tags = ["hardhat", "dev", "private-key"]
+
+[[rules]]
+id = "h2v-hardhat-private-key-2"
+description = "Hardhat development private key #2"
+regex = '''0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d'''
+tags = ["hardhat", "dev", "private-key"]
+
+[[rules]]
+id = "h2v-hardhat-private-key-3"
+description = "Hardhat development private key #3"
+regex = '''0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a'''
+tags = ["hardhat", "dev", "private-key"]
+
+[[rules]]
+id = "h2v-test-api-key"
+description = "Test API key for local development"
+regex = '''test-secret-key-for-local-development-12345'''
+tags = ["test", "dev", "api-key"]
+
+[[rules]]
+id = "h2v-test-jwt-secret"
+description = "Test JWT secret for CI"
+regex = '''test-secret-key-for-ci'''
+tags = ["test", "ci", "jwt-secret"]
+
+[[rules]]
+id = "h2v-test-db-password"
+description = "Test database password for CI"
+regex = '''h2v_password'''
+tags = ["test", "ci", "db-password"]
+
+# Allowlist for known safe values
+[allowlist]
+description = "Known safe values for development and testing"
+regexes = [
+    # Hardhat development account private keys (publicly known)
+    '''0xac0974bec39a17e36ba4a6b4d238ff944bacb478cbed5efcae784d7bf4f2ff80''',
+    '''0x59c6995e998f97a5a0044966f0945389dc9e86dae88c7a8412f4603b6b78690d''',
+    '''0x5de4111afa1a4b94908f83103eb1f1706367c2e68ca870fc3fb9a804cdab365a''',
+    # Test secrets for CI/CD
+    '''test-secret-key-for-local-development-12345''',
+    '''test-secret-key-for-ci''',
+    '''h2v_password''',
+    # Example values in documentation
+    '''your-secret-key''',
+    '''your-api-key''',
+    '''0x...''',
+]
